@@ -1,0 +1,32 @@
+html,
+body {
+  width: 100%;
+  heigh: 100%;
+}
+#content {
+  margin-top: 45px;
+}
+#content #mapcover {
+  height: 600px;
+  background-color: rgba(2, 2, 2, 0.1);
+  position: relative;
+}
+#content #mapcover #mapcover-ui {
+  position: absolute;
+  height: 0%;
+  width: 0%;
+  z-index: 1;
+}
+#content #mapcover #mapcover-ui #demoControlPanel {
+  position: relative;
+  left: 200px;
+  top: 400px;
+  height: 100px;
+  width: 200px;
+  background-color: #fff;
+}
+#content #mapcover #mapcover-map {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}

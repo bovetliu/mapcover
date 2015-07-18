@@ -1,0 +1,25 @@
+html,
+body {
+  width: 100%;
+  heigh: 100%;
+}
+#content {
+  margin-top: 45px;
+}
+#content #mapcover {
+  height: 600px;
+}
+#content #mapcover #demoControlPanel {
+  position: absolute;
+  left: 200px;
+  top: 400px;
+  height: 100px;
+  width: 200px;
+  background-color: #fff;
+}
+#content #mapcover #demoContextPanel {
+  position: absolute;
+  width: 170px;
+  height: 240px;
+  border: 2px solid #222;
+}

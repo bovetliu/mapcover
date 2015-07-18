@@ -1,35 +1,33 @@
-html,body{
-  width: 100%;
-  heigh: 100%;
-}
-#content{
-  margin-top:45px;
-  #mapcover{
-    height: 600px;
-    background-color: rgba(2, 2, 2, 0.1);
+/*
+mapcover.less,  serves for mapcover,
+This file mainlies positioning & z-index information.
+Mapcover is attempting to create one virtual layer, which actually outside map container, but mimicing original
+map UI elements. Mapcover also introduces contextmenu.
+
+Author: Bowei Liu
+*/
+#mapcover{
+  position: relative;
+  
+  .mc-ascontextmenu,
+  .mc-static2mapcontainer,
+  .mc-static2mapcanvas {
+    z-index: 1;   // should has higher z-index thant map
+  }
+
+
+  .mc-static2mapcontainer{
+
+  }
+  .mc-ascontextmenu{
+    //as contextmenu, this element needs to be hidden at first
+    display: none;
+  }
+  #mapcover-map{
     position: relative;
-
-    #mapcover-ui{
-      position: absolute;
-      height: 0%;
-      width: 0%;
-      z-index: 1;
-
-      #demoControlPanel{
-        position: relative;
-        left: 200px;
-        top:400px;
-        height: 100px;
-        width: 200px;
-        background-color: #fff;
-      }
-
-    }
-    #mapcover-map{
-      position: relative;
-      height: 100%;
-      width: 100%;
-    }
+    height: 100%;
+    width: 100%;
   }
 
 }
+

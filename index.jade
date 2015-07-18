@@ -4,21 +4,22 @@ html(lang='en')
     title mapcover demo
     link(rel="stylesheet" href="assets/css/yeti_bootstrap.min.css")
     link(rel="stylesheet" href="assets/css/mapcover.css")
+    link(rel="stylesheet" href="assets/css/page_specific.css")
 
     // import google map
     script(type='text/javascript', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDEgp09_feK-aKfo_2h3tOcWfzbrByZwDw&libraries=geometry')
 
   body
-    
+    //this is just a bootstrap nav,
     nav.navbar.navbar-inverse.navbar-fixed-top
-      .container
+      .container-fluid
         .navbar-header
           button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
             span.sr-only Toggle navigation
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='#') Project name
+          a.navbar-brand(href='#') MAPCOVER.JS DEMO
         #navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
             li.active
@@ -28,24 +29,35 @@ html(lang='en')
             li
               a(href='#contact') Contact
         // /.nav-collapse
+
     .container-fluid#content
       .row
-        .col-md-6
+        .col-md-9
           div#mapcover
             // the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div
-            div#mapcover-ui
-              div#demoControlPanel.panel I am map UI control button's container
-              div#demoContextPanel.panel 
-            div#mapcover-map
-        .col-md-6
+
+            div#demoControlPanel.mc-static2mapcontainer.panel I am map UI control button's container
+            div#demoContextPanel.mc-ascontextmenu.panel I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, 
+
+            #mapcover-map
+        .col-md-3
 
     // /.container
 
     //
       Bootstrap core JavaScript
       ==================================================
+    
     // Placed at the end of the document so the pages load faster
     script(src='./assets/js/jquery.min.js')
     script(src='./assets/js/bootstrap.min.js')
+
+    //following are underscore and backbone
+      ==================================================
+    script(src='./assets/plugins/backbone/underscore-min.js')
+    script(src='./assets/plugins/backbone/backbone-min.js')
+
+    // following is the page specific JavaScript  
     script(src='./assets/js/mapcover.js')
+
 

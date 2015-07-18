@@ -34,16 +34,27 @@ html(lang='en')
       .row
         .col-md-9
           div#mapcover
+            #mapcover-map
             // the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div
 
+
+            div#demoCustomMarker.mc-static2mapcontainer.panel $35
             div#demoControlPanel.mc-static2mapcontainer.panel I am map UI control button's container
             div#demoContextPanel.mc-ascontextmenu.panel I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, 
 
-            #mapcover-map
+            
         .col-md-3
+
+
 
     // /.container
 
+
+
+
+    script#customMarkerTemplate(type="text/template")
+      div.mc-static2mapcanvas.panel.customized-marker
+        |<%= datacontent %>
     //
       Bootstrap core JavaScript
       ==================================================

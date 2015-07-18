@@ -10,23 +10,30 @@ Author: Bowei Liu
   position: relative;
   
   .mc-ascontextmenu,
-  .mc-static2mapcontainer,
-  .mc-static2mapcanvas {
+  .mc-static2mapcontainer{
     z-index: 1;   // should has higher z-index thant map
+    div {
+      z-index: 1;
+    }
   }
 
 
   .mc-static2mapcontainer{
+    position: absolute;
 
   }
   .mc-ascontextmenu{
     //as contextmenu, this element needs to be hidden at first
     display: none;
+    position: absolute;
   }
   #mapcover-map{
     position: relative;
     height: 100%;
     width: 100%;
+    .mc-static2mapcanvas{
+      position: absolute;
+    }
   }
 
 }

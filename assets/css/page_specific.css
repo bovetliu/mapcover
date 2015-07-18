@@ -9,8 +9,14 @@ body {
 #content #mapcover {
   height: 600px;
 }
+#content #mapcover #demoCustomMarker {
+  left: 200px;
+  top: 100px;
+  background-color: #FF5A5F;
+  color: #fff;
+  padding: 0px 5px;
+}
 #content #mapcover #demoControlPanel {
-  position: absolute;
   left: 200px;
   top: 400px;
   height: 100px;
@@ -18,8 +24,13 @@ body {
   background-color: #fff;
 }
 #content #mapcover #demoContextPanel {
-  position: absolute;
   width: 170px;
   height: 240px;
   border: 2px solid #222;
+}
+#content #mapcover #mapcover-map .customized-marker {
+  background-color: #FF5A5F;
+  color: #fff;
+  padding: 0px 5px;
+  font-size: 14px;
 }

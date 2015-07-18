@@ -29,16 +29,24 @@
       <div class="row">
         <div class="col-md-9">
           <div id="mapcover">
-            <!-- the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div-->
-            <div id="demoControlPanel" class="mc-static2mapcontainer panel">I am map UI control button's container</div>
-            <div id="demoContextPanel" class="mc-ascontextmenu panel">I am map context menu, you can sytle me and add logic to me, just like a normal DOM, </div>
             <div id="mapcover-map"></div>
+            <!-- the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div-->
+            
+            <div id="demoCustomMarker" class="mc-static2mapcontainer panel">$35</div>
+            <div id="demoControlPanel" class="mc-static2mapcontainer panel">I am map UI control button's container</div>
+            <div id="demoContextPanel" class="mc-ascontextmenu panel">I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, </div>
           </div>
         </div>
         <div class="col-md-3"></div>
       </div>
     </div>
     <!-- /.container-->
+    
+    
+    
+    <script id="customMarkerTemplate" type="text/template">
+      <div class="mc-static2mapcanvas panel customized-marker"><%= datacontent %></div>
+    </script>
     <!--
     Bootstrap core JavaScript
     ==================================================

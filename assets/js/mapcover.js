@@ -1,5 +1,6 @@
 $(document).ready(function readyCB(){
   
+  // this mapcover.js occupy position at window
   mapcover = (function () {
     
     var utility = (function createUtility(){
@@ -91,6 +92,8 @@ $(document).ready(function readyCB(){
         context_menu_shown:false,
         newest_right_click_on_map:null,  // google.maps.MouseEvent instance
         newest_click_on_map:null         // google.maps.MouseEvent instance
+
+
       },
       initialize:function(){
         /*event management*/
@@ -131,8 +134,9 @@ $(document).ready(function readyCB(){
             var div = document.createElement('div');
             this.div_ = div;
             // Add the element to the "overlayImage" pane.
+            //https://developers.google.com/maps/documentation/javascript/3.exp/reference#MapPanes
             var panes = this.getPanes();
-            panes.overlayImage.appendChild(this.div_);
+            panes.floatPane.appendChild(this.div_);
           };
 
           MMoverlay.prototype.draw = function() {  //overwritten
@@ -144,6 +148,9 @@ $(document).ready(function readyCB(){
             div.style.top = '50px';
             div.style.visibility = 'hidden';
             // fromLatLngToDivPixel finished
+          };
+          MMoverlay.prototype.onRemove = function() {
+            this.div_ = null;
           };
           // end of MMoverlay class declaration
           ClassRef.mmoverlay = new MMoverlay( ClassRef.model.get("map"));
@@ -212,12 +219,65 @@ $(document).ready(function readyCB(){
           }
         } else{
           console.log("no valid context_menu");
-          
+
         } 
       },
 
       //===========context menu management ends=============================
 
+      //====custom-marker management starts
+      initCustomMarker:function( compiledTemplateFunction ){
+        // templateFunction should take 
+        var ClassRef = this;
+        // ClassRef.compiledCustomMarkerTemplateFunction = compiledTemplateFunction;
+
+        ClassRef.CustomMarker = function (anchor,datacontent, latLng, map){
+          this.anchor = anchor; //anchor is one point {x: int, y:int}
+          this.map_ = map;
+          this.dom_ = null;
+          this.setMap(map);
+          this.datacontent = datacontent;
+          this.latLng = latLng;
+        };
+        ClassRef.CustomMarker.prototype = new google.maps.OverlayView();
+
+        ClassRef.CustomMarker.prototype.compiledTemplateFunction = compiledTemplateFunction;
+        ClassRef.CustomMarker.prototype.onAdd = function(){
+          var dom = $(this.compiledTemplateFunction(this.datacontent))[0];
+          this.dom_ = dom;
+          var panes = this.getPanes();
+          console.log(dom);
+          panes.markerLayer.appendChild(dom);
+        };
+        ClassRef.CustomMarker.prototype.draw = function(){
+          var overlayProjection = this.getProjection();
+
+          var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
+          var JQDOM = $(this.dom_);
+          JQDOM.css({
+            left:(anchor.x - Math.round(JQDOM.width() / 2))+ 'px',
+            top: (anchor.y - JQDOM.height() ) + 'px' 
+          });
+
+          // generate pixel position
+        };
+        ClassRef.CustomMarker.prototype.onRemove = function() {
+          this.dom_.parentNode.removeChild(this.dom_);
+          this.dom_ = null;
+        }
+        console.log(ClassRef.CustomMarker);
+        //======end of CustomMarker specification ===========
+        // ClassRef.CustomMarker
+        // ClassRef.CustomMarker.prototype = new CustomMarker();//inheritance
+
+      },
+      // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
+      CustomMarker:null,
+      addCustomMarker:function( options){
+        var temp_custom_marker = new this.CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
+        return temp_custom_marker;
+      },
+      //====custom-marker management ends
 
       pixelInMapCoverUIDOM:function(pixel, $dom){
         return utility.pixelInJQDOM(pixel, $dom);
@@ -266,7 +326,20 @@ $(document).ready(function readyCB(){
 
     return map_view_unit;
 
-  }) ();
+  }) ( );
+  
+  mapcover.initCustomMarker(_.template( $('#customMarkerTemplate').html()) );  
+  var temp_marker = mapcover.addCustomMarker(
+    {
+      anchor: null,
+      datacontent:{"datacontent":"Fully Customized Marker, $78"},
+      latLng: new google.maps.LatLng(-34.397, 150.644),
+      map: mapcover.model.get("map")
+    }
+  );
 
+  setTimeout(function(){
+    temp_marker.setMap(null);
+  }, 4000);
 
 }); // end of ready();

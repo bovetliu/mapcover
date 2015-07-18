@@ -2,21 +2,33 @@
 mapcover.less,  serves for mapcover,
 This file mainlies positioning & z-index information.
 Mapcover is attempting to create one virtual layer, which actually outside map container, but mimicing original
-map UI elements. Mapcover also introduces contextmenu
+map UI elements. Mapcover also introduces contextmenu.
+
+Author: Bowei Liu
 */
 #mapcover {
   position: relative;
 }
 #mapcover .mc-ascontextmenu,
-#mapcover .mc-static2mapcontainer,
-#mapcover .mc-static2mapcanvas {
+#mapcover .mc-static2mapcontainer {
   z-index: 1;
+}
+#mapcover .mc-ascontextmenu div,
+#mapcover .mc-static2mapcontainer div {
+  z-index: 1;
+}
+#mapcover .mc-static2mapcontainer {
+  position: absolute;
 }
 #mapcover .mc-ascontextmenu {
   display: none;
+  position: absolute;
 }
 #mapcover #mapcover-map {
   position: relative;
   height: 100%;
   width: 100%;
+}
+#mapcover #mapcover-map .mc-static2mapcanvas {
+  position: absolute;
 }

@@ -8,9 +8,16 @@ html,body{
   #mapcover{
     height: 600px;
 
-
+    #demoCustomMarker{
+      left: 200px;
+      top:100px;
+      // height: 20px;
+      // width: 50px;
+      background-color: #FF5A5F; 
+      color: #fff;
+      padding:0px 5px;
+    }
     #demoControlPanel{
-      position: absolute;
       left: 200px;
       top:400px;
       height: 100px;
@@ -19,12 +26,23 @@ html,body{
     }
     // here specifying, when contextmenu is shown how it would be like
     #demoContextPanel{
-      position: absolute;
+      
       width:170px;
       height: 240px;
       border:2px solid #222;
     }
-
+  
+    #mapcover-map{  // map container
+      .customized-marker{
+        background-color: #FF5A5F; 
+        color: #fff;
+        padding:0px 5px;
+        font-size: 14px;
+      }
+      
+    }
   }
+
+
 
 }

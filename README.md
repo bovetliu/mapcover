@@ -5,11 +5,11 @@
 
 For control UI elements like "zoomin", "zoomout", instead of using those original, deeply embeded UI DOMs provided by Map venders, one can create UI DOMs for map at same depth with the map container DIV, just like creating any other DOMs on your webpage. 
 
-For context menu, Mapcover provide one predefined css class ".mc-ascontextmenu". You can turn one element beneath "mapcover container element" into map context menu, by assigning this css class to that element.
+For context menu, Mapcover provide one predefined css class `.mc-ascontextmenu`. So you can turn one element beneath "mapcover container element" into map context menu, by assigning this css class to that element. This css class `.mc-ascontextmenu` does not specify any concrete CSS, just serving as indentifier for Mapcover to know which one is context menu target.
 
-[Goto Mapcover.js Demo!](http://www.easysublease.org/mapcoverjs/) and read how it works.
+<a href="http://www.easysublease.org/mapcoverjs/" target="_blank">Goto Mapcover.js Demo</a> and read following to learn it works.
 
-Lets start read code of "demo.js"
+Let's start from ["demo.js"](https://github.com/bovetliu/mapcover/blob/master/assets/js/demo.js)
 
 ```javascript
 var mapcover = initMapCover( 'mapcover', 'mapcover-map' );
@@ -28,7 +28,7 @@ create two Classes for two kinds of CustomMarker, using two different templates 
 You are free to pass in any compiled template function as argument of initCustomMarker(). As long as 
 the compiled template functions has usage similar with following
 ```javascript
-var generatedText = compiledFunction( dataobj)
+var generatedText = compiledFunction( dataobj);
 ```
 
 
@@ -66,10 +66,9 @@ the content of attribute 'datacontent' specifies the data which is necessary for
 var custom_marker_option2 = _.clone(custom_marker_option);
 var custom_marker_option3 = _.clone(custom_marker_option);
 custom_marker_option2.latLng = new google.maps.LatLng(-33.897, 151.644);
-custom_marker_option2.datacontent = {"displayedText":"Marker2"};```
+custom_marker_option2.datacontent = {"displayedText":"Marker2"};
 custom_marker_option3.latLng =new google.maps.LatLng(-34.697, 150.644);
 custom_marker_option3.datacontent = {"hotelname": "JingJiang Hotel", "number":2, "price": "五毛钱"};
-
 ```
 above code show just create two different marker options. But please pay attention, 
 the `custom_marker_options3` is for `CustomMarker2`, so it has different structure in terms of `datacontent` property.

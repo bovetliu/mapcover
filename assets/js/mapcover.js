@@ -91,8 +91,8 @@ $(document).ready(function readyCB(){
         map:null,          // map placeholder, should be initialized at initialize function of MapViewUnit
         context_menu_shown:false,
         newest_right_click_on_map:null,  // google.maps.MouseEvent instance
-        newest_click_on_map:null         // google.maps.MouseEvent instance
-
+        newest_click_on_map:null,         // google.maps.MouseEvent instance
+        user_gen_class:{}
 
       },
       initialize:function(){
@@ -233,25 +233,24 @@ $(document).ready(function readyCB(){
 
         ClassRef.CustomMarker = function (anchor,datacontent, latLng, map){
           this.anchor = anchor; //anchor is one point {x: int, y:int}
-          this.map_ = map;
-          this.dom_ = null;
+
+          this.dom_ = $(compiledTemplateFunction(datacontent))[0];
           this.setMap(map);
           this.datacontent = datacontent;
           this.latLng = latLng;
+
         };
-        ClassRef.CustomMarker.prototype = new google.maps.OverlayView();
+        ClassRef.CustomMarker.prototype = new google.maps.OverlayView();   // OverlayView extends MVCObject
 
         ClassRef.CustomMarker.prototype.compiledTemplateFunction = compiledTemplateFunction;
         ClassRef.CustomMarker.prototype.onAdd = function(){
-          var dom = $(this.compiledTemplateFunction(this.datacontent))[0];
-          this.dom_ = dom;
           var panes = this.getPanes();
-          console.log(dom);
-          panes.markerLayer.appendChild(dom);
+          //console.log(this.dom_);
+          panes.overlayMouseTarget.appendChild(this.dom_);
         };
         ClassRef.CustomMarker.prototype.draw = function(){
           var overlayProjection = this.getProjection();
-
+          // console.log("draw" + this.latLng);
           var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
           var JQDOM = $(this.dom_);
           JQDOM.css({
@@ -261,21 +260,91 @@ $(document).ready(function readyCB(){
 
           // generate pixel position
         };
-        ClassRef.CustomMarker.prototype.onRemove = function() {
+        ClassRef.CustomMarker.prototype.onRemove = function() {  // setMap(null) will run this
           this.dom_.parentNode.removeChild(this.dom_);
-          this.dom_ = null;
+          // this.dom_ = null;
+          $(this.dom_).hide();
         }
-        console.log(ClassRef.CustomMarker);
+        ClassRef.CustomMarker.prototype.setPosition = function(latLng){
+          this.latLng = latLng;
+
+        };
+        ClassRef.CustomMarker.prototype.getDOM =function(){
+          return this.dom_;
+        }
         //======end of CustomMarker specification ===========
-        // ClassRef.CustomMarker
-        // ClassRef.CustomMarker.prototype = new CustomMarker();//inheritance
+        
+        //=====start of CustomMarkerController specification
+
+        ClassRef.CustomMarkerController = Backbone.Model.extend ({
+          //when creating instance, there is custom_marker 
+          defaults:{
+            click:null,       // function placeholder
+            dbclick:null,     // function placeholder
+            drag:null,        // function placeholder
+            dragend:null,     // ...
+            dragstart:null,
+            mousemove:null,
+            mouseout:null,
+            mouseover:null,
+            rightclick:null,
+
+            anchor:null,
+            datacontent:null,
+            latLng:null,
+            map:null
+          },
+          initialize:function(){
+            var ClassRef = this;
+            var mouse_events =  _.keys(this.omit('anchor','datacontent', 'latLng', 'map'));
+            _.each(mouse_events, function( keyname, index, list){
+              ClassRef.on("change:"+keyname, function changeHandler () {
+                if ( typeof ClassRef.get(keyname) == 'function') {
+                  google.maps.event.addDomListener( ClassRef.get('custom_marker').getDOM(), keyname, function(){
+                    var tempfunc = ClassRef.get(keyname);
+                    tempfunc(ClassRef.get('custom_marker').getDOM());
+                  });
+                }
+                else {
+                  console.log("content of " + keyname + " is not function");
+                }
+              });
+            });  // _.each(...);
+
+            ClassRef.on("change:latLng", function latLngChangeHandlerOfCustomMarker () {
+              if (ClassRef.get("latLng").lat && ClassRef.get("latLng").lng){
+                ClassRef.get("custom_marker").latLng = ClassRef.get("latLng");
+                ClassRef.get("custom_marker").draw();
+              }else {
+                console.error("latLngChangeHandlerOfCustomMarker() encountered invalid latLng");
+              }
+
+            });
+          } // end of initialize(){}
+        });
+        //=====end of CustomMarkerController specification
 
       },
       // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
-      CustomMarker:null,
+      CustomMarker:null,   // Class CustomMarker
+      CustomMarkerController:null,
       addCustomMarker:function( options){
         var temp_custom_marker = new this.CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
-        return temp_custom_marker;
+        console.log("generated temp_custom_marker");
+        console.log(temp_custom_marker);
+
+        if (options.mouseover){
+          google.maps.event.addDomListener(temp_custom_marker.getDOM(), 'mouseover',function(){
+            options.mouseover(temp_custom_marker.getDOM());
+          });
+        }
+        if (options.mouseout){
+          google.maps.event.addDomListener(temp_custom_marker.getDOM(), 'mouseout',function(){
+            options.mouseout(temp_custom_marker.getDOM());
+          });
+        }
+        var temp_custom_marker_controller = new this.CustomMarkerController({ "custom_marker": temp_custom_marker});
+        return temp_custom_marker_controller;
       },
       //====custom-marker management ends
 
@@ -296,7 +365,7 @@ $(document).ready(function readyCB(){
         // console.log("left click at: " + event.latLng);
         var ClassRef = this;
         var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event.latLng);
-        console.log("left click at pixel: " + pixel);
+        // console.log("left click at pixel: " + pixel);
         ClassRef.contextMenuMeetMouse(pixel, "click");
         ClassRef.model.set("newest_click_on_map", event);
 
@@ -305,7 +374,7 @@ $(document).ready(function readyCB(){
         // console.log("right click at: " + event.latLng);
         var ClassRef = this;
         var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event.latLng);
-        console.log("right click at pixel: " + pixel);
+        // console.log("right click at pixel: " + pixel);
         ClassRef.contextMenuMeetMouse(pixel, "rightclick");
         ClassRef.model.set("newest_right_click_on_mapw",event);
        
@@ -328,18 +397,39 @@ $(document).ready(function readyCB(){
 
   }) ( );
   
-  mapcover.initCustomMarker(_.template( $('#customMarkerTemplate').html()) );  
-  var temp_marker = mapcover.addCustomMarker(
-    {
-      anchor: null,
-      datacontent:{"datacontent":"Fully Customized Marker, $78"},
-      latLng: new google.maps.LatLng(-34.397, 150.644),
-      map: mapcover.model.get("map")
-    }
-  );
 
-  setTimeout(function(){
-    temp_marker.setMap(null);
-  }, 4000);
+  var custom_marker_option = {
+    anchor: null,
+    datacontent:{"datacontent":"Fully Customized Marker, $78"},
+    latLng: new google.maps.LatLng(-34.397, 150.644),
+    map: mapcover.model.get("map"),
+    mouseover:function(dom){
+      console.log("marker heard mouseover");
+      dom.classList.add("customized-marker-hover");
+    },
+    mouseout:function(dom){
+      console.log("marker heard mouseout");
+      dom.classList.remove("customized-marker-hover");
+    }
+  };
+
+  mapcover.initCustomMarker(_.template( $('#customMarkerTemplate').html()) );  
+  var temp_marker_controller = mapcover.addCustomMarker(custom_marker_option );
+
+  temp_marker_controller.set( "mouseout", function (dom){  
+      console.log("this handler is set by setting controller");
+      dom.classList.remove("customized-marker-hover");
+  });
+
+  var custom_marker_option2 = _.clone(custom_marker_option);
+
+  custom_marker_option2.latLng = new google.maps.LatLng(-34.397, 152.644);
+  custom_marker_option2.datacontent = {"datacontent":"Yo Yo Check Now"};
+  var temp_marker1_controller = mapcover.addCustomMarker(  custom_marker_option2);
+
+
+  setTimeout(function timeout(){
+    temp_marker_controller.set("latLng",new google.maps.LatLng(-33.397, 150.644) );
+  },2000);
 
 }); // end of ready();

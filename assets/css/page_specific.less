@@ -1,6 +1,6 @@
 html,body{
   width: 100%;
-  heigh: 100%;
+  height: 100%;
 }
 
 #content{
@@ -33,16 +33,19 @@ html,body{
     }
   
     #mapcover-map{  // map container
-      .customized-marker{
-        background-color: #FF5A5F; 
-        color: #fff;
-        padding:0px 5px;
-        font-size: 14px;
+      .gm-style{
+        div div{
+          .customized-marker{
+            background-color: #FF5A5F; 
+            color: #fff;
+            padding:0px 5px;
+            font-size: 14px;
+          }
+          .customized-marker.customized-marker-hover{
+            background-color: #252525;
+          }
+        }
       }
-      
     }
   }
-
-
-
 }

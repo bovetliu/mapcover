@@ -36,14 +36,11 @@ html(lang='en')
           div#mapcover
             #mapcover-map
             // the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div
-
-
-            div#demoCustomMarker.mc-static2mapcontainer.panel $35
             div#demoControlPanel.mc-static2mapcontainer.panel I am map UI control button's container
             div#demoContextPanel.mc-ascontextmenu.panel I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, 
 
             
-        .col-md-3
+        .col-md-3#log
 
 
 
@@ -68,7 +65,9 @@ html(lang='en')
     script(src='./assets/plugins/backbone/underscore-min.js')
     script(src='./assets/plugins/backbone/backbone-min.js')
 
-    // following is the page specific JavaScript  
+    // following is mapcover.js JavaScript  
     script(src='./assets/js/mapcover.js')
+
+    script(src='./assets/js/demo.js')
 
 

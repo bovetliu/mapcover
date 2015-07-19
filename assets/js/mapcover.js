@@ -246,6 +246,10 @@ $(document).ready(function readyCB(){
         ClassRef.CustomMarker.prototype.onAdd = function(){
           var panes = this.getPanes();
           //console.log(this.dom_);
+          if (this.dom_ == null){
+            console.log("remaking this.dom_");
+            this.dom_ = $(this.compiledTemplateFunction(this.datacontent))[0];
+          }
           panes.overlayMouseTarget.appendChild(this.dom_);
         };
         ClassRef.CustomMarker.prototype.draw = function(){
@@ -261,9 +265,10 @@ $(document).ready(function readyCB(){
           // generate pixel position
         };
         ClassRef.CustomMarker.prototype.onRemove = function() {  // setMap(null) will run this
+          console.log("onRemove is called");
           this.dom_.parentNode.removeChild(this.dom_);
           // this.dom_ = null;
-          $(this.dom_).hide();
+          // $(this.dom_).hide();
         }
         ClassRef.CustomMarker.prototype.setPosition = function(latLng){
           this.latLng = latLng;
@@ -271,6 +276,10 @@ $(document).ready(function readyCB(){
         };
         ClassRef.CustomMarker.prototype.getDOM =function(){
           return this.dom_;
+        }
+        ClassRef.CustomMarker.prototype.delete = function(){
+          this.dom_.parentNode.removeChild(this.dom_);
+          this.dom_ = null;
         }
         //======end of CustomMarker specification ===========
         
@@ -280,7 +289,7 @@ $(document).ready(function readyCB(){
           //when creating instance, there is custom_marker 
           defaults:{
             click:null,       // function placeholder
-            dbclick:null,     // function placeholder
+            dblclick:null,     // function placeholder
             drag:null,        // function placeholder
             dragend:null,     // ...
             dragstart:null,
@@ -294,16 +303,26 @@ $(document).ready(function readyCB(){
             latLng:null,
             map:null
           },
+          delete:function(){
+            this.get("custom_marker").delete();
+
+          },
           initialize:function(){
             var ClassRef = this;
             var mouse_events =  _.keys(this.omit('anchor','datacontent', 'latLng', 'map'));
             _.each(mouse_events, function( keyname, index, list){
               ClassRef.on("change:"+keyname, function changeHandler () {
                 if ( typeof ClassRef.get(keyname) == 'function') {
-                  google.maps.event.addDomListener( ClassRef.get('custom_marker').getDOM(), keyname, function(){
+                  console.log(keyname + "changed");
+                  google.maps.event.addDomListener( ClassRef.get('custom_marker').getDOM(), keyname, function listenerInvokesMe( ){
                     var tempfunc = ClassRef.get(keyname);
-                    tempfunc(ClassRef.get('custom_marker').getDOM());
-                  });
+                    tempfunc( ClassRef.get('custom_marker').getDOM());
+                  });           
+                }
+                else if (ClassRef.get(keyname) == null){
+                  console.log("cancel one event handler of " + keyname);
+                  google.maps.event.clearListeners( ClassRef.get('custom_marker').getDOM() , keyname);
+
                 }
                 else {
                   console.log("content of " + keyname + " is not function");
@@ -318,7 +337,15 @@ $(document).ready(function readyCB(){
               }else {
                 console.error("latLngChangeHandlerOfCustomMarker() encountered invalid latLng");
               }
+            });
 
+            ClassRef.on("change:datacontent", function datacontentChangeHandlerOfCustomMarker(){
+              ClassRef.get("custom_marker").draw();
+            });
+            ClassRef.on("change:map", function mapChangeHandlerOfCustomMarker(){
+              console.log("controller map changed");
+              ClassRef.get("custom_marker").setMap( ClassRef.get("map") );
+              // ClassRef.get("custom_marker").draw();
             });
           } // end of initialize(){}
         });
@@ -330,20 +357,25 @@ $(document).ready(function readyCB(){
       CustomMarkerController:null,
       addCustomMarker:function( options){
         var temp_custom_marker = new this.CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
-        console.log("generated temp_custom_marker");
-        console.log(temp_custom_marker);
+        
 
-        if (options.mouseover){
-          google.maps.event.addDomListener(temp_custom_marker.getDOM(), 'mouseover',function(){
-            options.mouseover(temp_custom_marker.getDOM());
-          });
-        }
-        if (options.mouseout){
-          google.maps.event.addDomListener(temp_custom_marker.getDOM(), 'mouseout',function(){
-            options.mouseout(temp_custom_marker.getDOM());
-          });
-        }
+        console.log("generated temp_custom_marker");
+        // console.log(temp_custom_marker);
         var temp_custom_marker_controller = new this.CustomMarkerController({ "custom_marker": temp_custom_marker});
+        _.each(_.keys(_.omit(options, 'anchor', 'datacontent', 'latLng', 'map')), function(keyname, index, ar){
+          if (typeof options[keyname] == 'function' || options[keyname] == null) {
+            temp_custom_marker_controller.set(keyname, options[keyname]);
+          }
+        });
+
+        // for key options setting, suppressing change event
+        temp_custom_marker_controller.set({
+          anchor:options.anchor,
+          datacontent:options.datacontent,
+          latLng:options.latLng,
+          map:options.map
+        }, {silent:true}); 
+
         return temp_custom_marker_controller;
       },
       //====custom-marker management ends
@@ -397,39 +429,5 @@ $(document).ready(function readyCB(){
 
   }) ( );
   
-
-  var custom_marker_option = {
-    anchor: null,
-    datacontent:{"datacontent":"Fully Customized Marker, $78"},
-    latLng: new google.maps.LatLng(-34.397, 150.644),
-    map: mapcover.model.get("map"),
-    mouseover:function(dom){
-      console.log("marker heard mouseover");
-      dom.classList.add("customized-marker-hover");
-    },
-    mouseout:function(dom){
-      console.log("marker heard mouseout");
-      dom.classList.remove("customized-marker-hover");
-    }
-  };
-
-  mapcover.initCustomMarker(_.template( $('#customMarkerTemplate').html()) );  
-  var temp_marker_controller = mapcover.addCustomMarker(custom_marker_option );
-
-  temp_marker_controller.set( "mouseout", function (dom){  
-      console.log("this handler is set by setting controller");
-      dom.classList.remove("customized-marker-hover");
-  });
-
-  var custom_marker_option2 = _.clone(custom_marker_option);
-
-  custom_marker_option2.latLng = new google.maps.LatLng(-34.397, 152.644);
-  custom_marker_option2.datacontent = {"datacontent":"Yo Yo Check Now"};
-  var temp_marker1_controller = mapcover.addCustomMarker(  custom_marker_option2);
-
-
-  setTimeout(function timeout(){
-    temp_marker_controller.set("latLng",new google.maps.LatLng(-33.397, 150.644) );
-  },2000);
-
+ 
 }); // end of ready();

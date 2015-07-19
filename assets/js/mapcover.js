@@ -174,7 +174,7 @@ $(document).ready(function readyCB(){
           console.error("one mapcover instance can only has one $context_menu");
           return;
         }
-        if (  ClassRef.pixelInMapCoverUIDOM(pixel, ClassRef.$context_menu) ){
+        if (  utility.pixelInJQDOM(pixel, ClassRef.$context_menu) ){
           return true;
         }
         else return false;
@@ -220,28 +220,27 @@ $(document).ready(function readyCB(){
           }
         } else{
           console.log("no valid context_menu");
-
         } 
       },
 
       //===========context menu management ends=============================
 
+
+
       //====custom-marker management starts
-      initCustomMarker:function( compiledTemplateFunction ){
+      initCustomMarker:function( classname,compiledTemplateFunction ){
         // templateFunction should take 
         var ClassRef = this;
-      
-
         // ClassRef.compiledCustomMarkerTemplateFunction = compiledTemplateFunction;
 
         var CustomMarker = function (anchor,datacontent, latLng, map){
 
           this.anchor = anchor; //anchor is one point {x: int, y:int}
-
           this.container_ = document.createElement("div");
 
-          this.dom_ =  $.parseHTML(compiledTemplateFunction(datacontent))[0];
-          // console.log(this.dom_)
+          this.dom_ =  $(  compiledTemplateFunction(datacontent) )[0];
+          console.log(compiledTemplateFunction(datacontent))
+          console.log( $(  compiledTemplateFunction(datacontent) )[0]);
           this.setMap(map);
           this.datacontent = datacontent;
           this.latLng = latLng;
@@ -259,7 +258,7 @@ $(document).ready(function readyCB(){
             console.log("remaking this.dom_");
 
 
-            this.dom_ = $.parseHTML(this.compiledTemplateFunction(this.datacontent))[0];
+            this.dom_ =$( this.compiledTemplateFunction(datacontent) )[0];
           }
           panes.overlayMouseTarget.appendChild(this.container_);
           if (this.width_ == null) {
@@ -275,7 +274,7 @@ $(document).ready(function readyCB(){
           // console.log("draw" + this.latLng);
           var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
           // var JQDOM = $(this.dom_);
-          var diff = this.dom_.offsetWidth - this.dom_.clientWidth;
+
           console.log(this.width_);
           // console.log(JQDOM .width());
           if (this.dom_) {
@@ -322,8 +321,31 @@ $(document).ready(function readyCB(){
         }
 
         //======end of CustomMarker specification ===========
-        //=====start of CustomMarkerController specification
 
+
+        ClassRef.model.set(classname, CustomMarker);
+        console.log(classname);
+        console.log(ClassRef.model.get(classname));
+      },
+      // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
+      // CustomMarker:null,   // Class CustomMarker
+      
+      // init_As_:function( classname, category, compiledTemplateFunction ){
+      //   var ClassRef = this;
+      //   switch (category):
+      //     case "mc-static2mapcanvas":
+      //       ClassRef.model.set(classname, null);
+      //       var MotherClass = ClassRef.get("CustomMarker");
+      //       SubClass.prototype = new MotherClass();
+      //       ClassRef.model.set(classname, SubClass)
+      //       break;
+      //     default:
+      //       console.error("does not recognize this category: " + category);
+      //       break;
+      // },
+      initCustomMarkerController:function(){
+        //=====start of CustomMarkerController specification
+        var ClassRef = this;
         ClassRef.CustomMarkerController = Backbone.Model.extend ({
           //when creating instance, there is custom_marker 
           defaults:{
@@ -390,21 +412,16 @@ $(document).ready(function readyCB(){
               // ClassRef.get("custom_marker").draw();
             });
           } // end of initialize(){}
-        });
-        //=====end of CustomMarkerController specification
-        ClassRef.model.set("CustomMarker", CustomMarker);
+        }); 
+
+        // end of = CustomMarkerController class definition
       },
-      // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
-      CustomMarker:null,   // Class CustomMarker
       CustomMarkerController:null,
-      addCustomMarker:function( options){
-        var CustomMarker = this.model.get("CustomMarker");
 
-
-
+      addCustomMarker:function( classname, options){
+        var CustomMarker = this.model.get(classname);
+        console.log(options.datacontent);
         var temp_custom_marker = new CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
-        
-
         console.log("generated temp_custom_marker");
         // console.log(temp_custom_marker);
         var temp_custom_marker_controller = new this.CustomMarkerController({ "custom_marker": temp_custom_marker});
@@ -425,10 +442,6 @@ $(document).ready(function readyCB(){
         return temp_custom_marker_controller;
       },
       //====custom-marker management ends
-
-      pixelInMapCoverUIDOM:function(pixel, $dom){
-        return utility.pixelInJQDOM(pixel, $dom);
-      },
 
       getPixelInMapcoverContainerFromLatLng:function (latLng){
         var ClassRef = this;
@@ -455,14 +468,15 @@ $(document).ready(function readyCB(){
         // console.log("right click at pixel: " + pixel);
         ClassRef.contextMenuMeetMouse(pixel, "rightclick");
         ClassRef.model.set("newest_right_click_on_mapw",event);
-       
       },
+
 
 
       initialize:function (){
         console.log("map_view_unit init()");
         var ClassRef = this;
-        ClassRef.mapInitialize();   
+        ClassRef.mapInitialize(); 
+        ClassRef.initCustomMarkerController();  
         if ($('.mc-ascontextmenu').length == 1){
           console.log("map cover has one context menu.");
         }   

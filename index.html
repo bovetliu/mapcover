@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8">
     <title>mapcover demo</title>
     <link rel="stylesheet" href="assets/css/yeti_bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/mapcover.css">
@@ -31,7 +32,12 @@
           <div id="mapcover">
             <div id="mapcover-map"></div>
             <!-- the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div-->
-            <div id="demoControlPanel" class="mc-static2mapcontainer panel">I am map UI control button's container</div>
+            <div id="demoControlPanel" class="mc-static2mapcontainer panel">
+               
+              I am map UI control button's container, 
+              <div>zoomIn</div>
+              <div>zoomOut</div>
+            </div>
             <div id="demoContextPanel" class="mc-ascontextmenu panel">I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, </div>
           </div>
         </div>
@@ -43,6 +49,13 @@
     
     
     <script id="customMarkerTemplate" type="text/template"><span class="mc-static2mapcanvas panel customized-marker"><%= datacontent %></span></script>
+    <script id="AnotherClassTemplate" type="text/template">
+      <div class="mc-static2mapcanvas customized-marker2">
+        <div class="header1 text-center"><%=hotelname%></div>
+        <div class="number"><%=number%> nights</div>
+        <div class="price">for <%=price%></div>
+      </div>
+    </script>
     <!--
     Bootstrap core JavaScript
     ==================================================

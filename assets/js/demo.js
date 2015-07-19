@@ -21,12 +21,26 @@ $(document).ready(function(){
         var dom = container_node.childNodes[0];
 
         dom.classList.remove("customized-marker-hover");
+      },
+      click:function(container_node){
+        console.log("you clicked me");
       }
     };
 
-    mapcover.initCustomMarker(_.template( $('#customMarkerTemplate').html()) );  
+    var custom_marker_option2 = _.clone(custom_marker_option);
+    var custom_marker_option3 = _.clone(custom_marker_option);
+    custom_marker_option2.latLng = new google.maps.LatLng(-33.897, 151.644);
+    custom_marker_option2.datacontent = {"datacontent":"Marker2"};
+
+    custom_marker_option3.latLng =new google.maps.LatLng(-34.697, 150.644);
+    custom_marker_option3.datacontent = {"hotelname": "JingJiang Hotel", "number":2, "price": "五毛钱"};
+
+    mapcover.initCustomMarker( "CustomMarker1" , _.template( $('#customMarkerTemplate').html()  ));  
+    mapcover.initCustomMarker( "CustomMarker2", _.template($('#AnotherClassTemplate').html() ) );
     
-    var temp_marker_controller = mapcover.addCustomMarker(custom_marker_option );
+
+
+    var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
 
     temp_marker_controller.set( "mouseout", function (container_node){  
         console.log("this handler is set by setting controller");
@@ -34,11 +48,9 @@ $(document).ready(function(){
         dom.classList.remove("customized-marker-hover");
     });
 
-    var custom_marker_option2 = _.clone(custom_marker_option);
 
-    custom_marker_option2.latLng = new google.maps.LatLng(-33.397, 152.644);
-    custom_marker_option2.datacontent = {"datacontent":"Marker2"};
-    var temp_marker1_controller = mapcover.addCustomMarker(  custom_marker_option2);
+
+    var temp_marker1_controller = mapcover.addCustomMarker( "CustomMarker1"  , custom_marker_option2);
 
     $('#log').html("1. two custom_markers generated")
 
@@ -87,8 +99,14 @@ $(document).ready(function(){
       temp_marker_controller.delete();
       temp_marker_controller = null;
       console.log(temp_marker_controller);
-      $('#log').html( $('#log').html()+ "<br/>6. delete it,removed its references, hoping trash collector will handle it")
+      $('#log').html( $('#log').html()+ "<br/>6. delete it,removed its references, hoping trash collector will handle it, <br/> make one new instance of class CustomMarker2, ")
+
+      mapcover.addCustomMarker("CustomMarker2"  , custom_marker_option3);
+
     } ,15000);
+
+
+
 
   }); // end of _.defer(function, ..);
  

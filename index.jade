@@ -1,6 +1,7 @@
 doctype html
 html(lang='en')
   head
+    meta(charset="utf-8")
     title mapcover demo
     link(rel="stylesheet" href="assets/css/yeti_bootstrap.min.css")
     link(rel="stylesheet" href="assets/css/mapcover.css")
@@ -36,7 +37,11 @@ html(lang='en')
           div#mapcover
             #mapcover-map
             // the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div
-            div#demoControlPanel.mc-static2mapcontainer.panel I am map UI control button's container
+            div#demoControlPanel.mc-static2mapcontainer.panel 
+              |I am map UI control button's container, 
+
+              div zoomIn
+              div zoomOut
             div#demoContextPanel.mc-ascontextmenu.panel I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, 
 
             
@@ -52,6 +57,13 @@ html(lang='en')
     script#customMarkerTemplate(type="text/template")
       span.mc-static2mapcanvas.panel.customized-marker
         |<%= datacontent %>
+
+    script#AnotherClassTemplate(type="text/template")
+      div.mc-static2mapcanvas.customized-marker2
+        div.header1.text-center <%=hotelname%>
+        div.number <%=number%> nights
+        div.price for <%=price%>
+
     //
       Bootstrap core JavaScript
       ==================================================

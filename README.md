@@ -7,7 +7,7 @@ For control UI elements like "zoomin", "zoomout", instead of using those origina
 
 For context menu, Mapcover provide one predefined css class `.mc-ascontextmenu`. So you can turn one element beneath "mapcover container element" into map context menu, by assigning this css class to that element. This css class `.mc-ascontextmenu` does not specify any concrete CSS, just serving as indentifier for Mapcover to know which one is context menu target.
 
-dependency: Backbone.js/Underscore.js, jQuery, Google Map,
+dependency: Backbone.js/Underscore.js, jQuery, Google Map API V3,
 
 <a href="http://www.easysublease.org/mapcoverjs/" target="_blank">Goto 15s Mapcover.js Demo</a> and read following to learn it works. Then you can right click on map to start playing with Mapcover.
 

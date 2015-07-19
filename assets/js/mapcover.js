@@ -1,7 +1,7 @@
 $(document).ready(function readyCB(){
   
   // this mapcover.js occupy position at window
-  mapcover = (function () {
+  initMapCover = function ( id_of_map_cover_div, id_of_map_container ) {
     
     var utility = (function createUtility(){
     
@@ -51,7 +51,7 @@ $(document).ready(function readyCB(){
 
         var tbr = targetLeftTop;
         /*currently only works when $domOuter is map cover div*/
-        if ($domOuter ==  map_view_unit.$map_cover_div ){
+        if ($domOuter ==  map_view_unit.model.get('$map_cover_div') ){
           var dom_outer_left = 0;
           var dom_outer_right = dom_outer_left + $domOuter.width();
           var dom_outer_top = 0;
@@ -90,7 +90,8 @@ $(document).ready(function readyCB(){
         map_options:{ center: { lat: -34.397, lng: 150.644},zoom: 8 },  
         map:null,          // map placeholder, should be initialized at initialize function of MapViewUnit
         context_menu_shown:false,
-
+        $map_cover_div:$('#'+id_of_map_cover_div),
+        $map_container:$('#'+id_of_map_container),
         user_gen_classes:new Backbone.Model({}),
         user_map_events_handlers: new Backbone.Model({}),
         mc_map_events:{}
@@ -104,8 +105,6 @@ $(document).ready(function readyCB(){
     var MapViewUnit = Backbone.View.extend({
       // map_control_unit has its own model
       mmoverlay:null,   // this one if for google,
-      $map_cover_div: $("#mapcover"), 
-      $map_container:$("#mapcover-map"),
 
       mapInitialize:function(){
         var ClassRef = this;
@@ -113,7 +112,7 @@ $(document).ready(function readyCB(){
         if (ClassRef.model.get("map_vender") == "google")
         {   
 
-          ClassRef.model.set("map", new google.maps.Map(document.getElementById('mapcover-map'),  ClassRef.model.get("map_options") ) );
+          ClassRef.model.set("map", new google.maps.Map(ClassRef.model.get('$map_container')[0],  ClassRef.model.get("map_options") ) );
           var tempmap = ClassRef.model.get("map");
           // variable MMoverlay is just temp Object variable, but the instance of it will be property mmoverly of map_view_unit 
           var MMoverlay = function ( map) {
@@ -182,7 +181,7 @@ $(document).ready(function readyCB(){
       showContextMenu:function(pixel){
         var ClassRef = this;
         /*here I need to do some offseting, to make sure whole panel of contextMenu in Map Container*/
-        var pixel = utility.correctPixelAvoidOverflow( pixel,ClassRef.$context_menu, ClassRef.$map_cover_div );
+        var pixel = utility.correctPixelAvoidOverflow( pixel,ClassRef.$context_menu, ClassRef.model.get('$map_cover_div') );
         this.$context_menu.css({"left":pixel.x.toString()+"px", "top": pixel.y.toString() + "px"});
         this.$context_menu.show();
       },
@@ -236,8 +235,8 @@ $(document).ready(function readyCB(){
           this.container_ = document.createElement("div");
 
           this.dom_ =  $(  compiledTemplateFunction(datacontent) )[0];
-          console.log(compiledTemplateFunction(datacontent))
-          console.log( $(  compiledTemplateFunction(datacontent) )[0]);
+          // console.log(compiledTemplateFunction(datacontent))
+          // console.log( $(  compiledTemplateFunction(datacontent) )[0]);
           this.setMap(map);
           this.datacontent = datacontent;
           this.latLng = latLng;
@@ -276,7 +275,7 @@ $(document).ready(function readyCB(){
           // console.log(this.width_);
           // console.log(JQDOM .width());
           if (this.dom_) {
-            console.log(this.dom_)
+            // console.log(this.dom_)
             this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';
             this.dom_.style.left = Math.round( anchor.x - this.width_ / 2).toString() + 'px';
             $(this.dom_).outerWidth(this.width_); // I need to have this method, 
@@ -485,5 +484,5 @@ $(document).ready(function readyCB(){
     var map_view_unit = new MapViewUnit({model: map_control_unit_model}); 
 
     return map_view_unit;
-  }) ( );
+  };
 }); // end of ready();

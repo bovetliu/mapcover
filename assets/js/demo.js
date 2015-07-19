@@ -1,8 +1,11 @@
 $(document).ready(function(){
  
   _.defer(function saferun () {
-
+    /*adjust mapcover height, irrelevant of main demo purpose*/
     $('#mapcover').height( $('#content').height() );
+
+    /*initMapCover takes into two ids, first one for mapcover container, the second one for the map embedded in mapcover*/
+    var mapcover = initMapCover( 'mapcover', 'mapcover-map' );;
 
     var custom_marker_option = {
       anchor: null,
@@ -20,15 +23,14 @@ $(document).ready(function(){
         console.log("marker heard mouseout");
         // console.log(event.latLng);
         // console.log(container_node);
-
         var dom = container_node.childNodes[0];
-
         dom.classList.remove("customized-marker-hover");
       },
       click:function(container_node){
         console.log("you clicked me");
       }
     };
+
 
     var custom_marker_option2 = _.clone(custom_marker_option);
     var custom_marker_option3 = _.clone(custom_marker_option);
@@ -40,8 +42,6 @@ $(document).ready(function(){
 
     mapcover.initCustomMarker( "CustomMarker1" , _.template( $('#customMarkerTemplate').html()  ));  
     mapcover.initCustomMarker( "CustomMarker2", _.template($('#AnotherClassTemplate').html() ) );
-    
-
 
     /* assign logic to "zoom in", "zoom out"*/
     /*zoom range: 0-18*/

@@ -1,5 +1,5 @@
 ## Mapcover.js: make developers maps more interactive 
-####  Mapcover is one set of "DIV-based" "position aboluted" layers over regular map container DIVs. Mapcover will support Google Map, Bing Map, Mapbox, and so on. 
+####  Mapcover is one set of "DIV-based" "position aboluted" layers over regular map container DIVs. Mapcover currently Google Map. Will support Bing Map, Mapbox, and so on. 
 The purpose of mapcover is to help map developers better customize interaction DOMs "on" map.
 Original interaction DOMs like markers and infowindow provided Google Map API are infamous for difficulty of being styled, and being selected by jQuery. 
 

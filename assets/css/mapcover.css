@@ -30,6 +30,5 @@ Author: Bowei Liu
   width: 100%;
 }
 #mapcover #mapcover-map .mc-static2mapcanvas {
-  display: inline-block;
   position: absolute;
 }

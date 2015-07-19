@@ -1,38 +1,43 @@
 $(document).ready(function(){
  
   _.defer(function saferun () {
-
     var custom_marker_option = {
       anchor: null,
-      datacontent:{"datacontent":"Fully Customizable Marker, template generated HTML content"},
+      datacontent:{"datacontent":"This Marker1"},
       latLng: new google.maps.LatLng(-34.397, 150.644),
       map: mapcover.model.get("map"),
-      mouseover:function(dom){
+      mouseover:function(container_node){
         console.log("marker heard mouseover");
         // console.log(event.latLng);
+        // console.log(container_node);
+        var dom = container_node.childNodes[0];
         dom.classList.add("customized-marker-hover");
       },
-      mouseout:function(dom){
+      mouseout:function(container_node){
         console.log("marker heard mouseout");
         // console.log(event.latLng);
+        // console.log(container_node);
+
+        var dom = container_node.childNodes[0];
+
         dom.classList.remove("customized-marker-hover");
       }
     };
 
-
-
     mapcover.initCustomMarker(_.template( $('#customMarkerTemplate').html()) );  
+    
     var temp_marker_controller = mapcover.addCustomMarker(custom_marker_option );
 
-    temp_marker_controller.set( "mouseout", function (dom){  
+    temp_marker_controller.set( "mouseout", function (container_node){  
         console.log("this handler is set by setting controller");
+        var dom = container_node.childNodes[0];
         dom.classList.remove("customized-marker-hover");
     });
 
     var custom_marker_option2 = _.clone(custom_marker_option);
 
-    custom_marker_option2.latLng = new google.maps.LatLng(-34.397, 152.644);
-    custom_marker_option2.datacontent = {"datacontent":"I am another custom marker"};
+    custom_marker_option2.latLng = new google.maps.LatLng(-33.397, 152.644);
+    custom_marker_option2.datacontent = {"datacontent":"Marker2"};
     var temp_marker1_controller = mapcover.addCustomMarker(  custom_marker_option2);
 
     $('#log').html("1. two custom_markers generated")
@@ -43,6 +48,13 @@ $(document).ready(function(){
       $('#log').html( $('#log').html()+ "<br/>2. moved one custom marker")
 
     },3000);
+
+    setTimeout(function timeout(){
+      temp_marker1_controller.set("datacontent",  {"datacontent":"changed me !"});
+
+      $('#log').html( $('#log').html()+ "<br/>also change content of another marker")
+
+    },3100);
 
 
 

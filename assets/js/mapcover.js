@@ -92,7 +92,8 @@ $(document).ready(function readyCB(){
         context_menu_shown:false,
         newest_right_click_on_map:null,  // google.maps.MouseEvent instance
         newest_click_on_map:null,         // google.maps.MouseEvent instance
-        user_gen_class:{}
+        user_gen_class:{},
+        CustomMarker:null                // Class holder  for MapViewUnit
 
       },
       initialize:function(){
@@ -229,60 +230,96 @@ $(document).ready(function readyCB(){
       initCustomMarker:function( compiledTemplateFunction ){
         // templateFunction should take 
         var ClassRef = this;
+      
+
         // ClassRef.compiledCustomMarkerTemplateFunction = compiledTemplateFunction;
 
-        ClassRef.CustomMarker = function (anchor,datacontent, latLng, map){
+        var CustomMarker = function (anchor,datacontent, latLng, map){
+
           this.anchor = anchor; //anchor is one point {x: int, y:int}
 
-          this.dom_ = $(compiledTemplateFunction(datacontent))[0];
+          this.container_ = document.createElement("div");
+
+          this.dom_ =  $.parseHTML(compiledTemplateFunction(datacontent))[0];
+          // console.log(this.dom_)
           this.setMap(map);
           this.datacontent = datacontent;
           this.latLng = latLng;
-
+          this.width_ = null ;
+          this.height_ = null;
+          this.container_.appendChild(this.dom_);
         };
-        ClassRef.CustomMarker.prototype = new google.maps.OverlayView();   // OverlayView extends MVCObject
+        CustomMarker.prototype = new google.maps.OverlayView();   // OverlayView extends MVCObject
 
-        ClassRef.CustomMarker.prototype.compiledTemplateFunction = compiledTemplateFunction;
-        ClassRef.CustomMarker.prototype.onAdd = function(){
+        CustomMarker.prototype.compiledTemplateFunction = compiledTemplateFunction;
+        CustomMarker.prototype.onAdd = function(){
           var panes = this.getPanes();
           //console.log(this.dom_);
           if (this.dom_ == null){
             console.log("remaking this.dom_");
-            this.dom_ = $(this.compiledTemplateFunction(this.datacontent))[0];
+
+
+            this.dom_ = $.parseHTML(this.compiledTemplateFunction(this.datacontent))[0];
           }
-          panes.overlayMouseTarget.appendChild(this.dom_);
+          panes.overlayMouseTarget.appendChild(this.container_);
+          if (this.width_ == null) {
+            this.width_ = this.dom_.offsetWidth ;
+          }
+          if (this.height_ == null){
+            this._height_ = this.dom_.offsetHeight;
+          }
+
         };
-        ClassRef.CustomMarker.prototype.draw = function(){
+        CustomMarker.prototype.draw = function(){
           var overlayProjection = this.getProjection();
           // console.log("draw" + this.latLng);
           var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
-          var JQDOM = $(this.dom_);
-          JQDOM.css({
-            left:(anchor.x - Math.round(JQDOM.width() / 2))+ 'px',
-            top: (anchor.y - JQDOM.height() ) + 'px' 
-          });
+          // var JQDOM = $(this.dom_);
+          console.log(this.width_);
+          // console.log(JQDOM .width());
+          if (this.dom_) {
+            this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';
+            this.dom_.style.left = Math.round( anchor.x - this.width_ / 2).toString() + 'px';
+          }
 
           // generate pixel position
         };
-        ClassRef.CustomMarker.prototype.onRemove = function() {  // setMap(null) will run this
+        CustomMarker.prototype.onRemove = function() {  // setMap(null) will run this
           console.log("onRemove is called");
-          this.dom_.parentNode.removeChild(this.dom_);
+          this.dom_.parentNode.parentNode.removeChild(this.container_);
           // this.dom_ = null;
           // $(this.dom_).hide();
         }
-        ClassRef.CustomMarker.prototype.setPosition = function(latLng){
+        CustomMarker.prototype.setPosition = function(latLng){
           this.latLng = latLng;
-
         };
-        ClassRef.CustomMarker.prototype.getDOM =function(){
+
+        CustomMarker.prototype.refresh = function () {
+          console.log("refresh()" + this.datacontent.datacontent);
+          this.container_.removeChild(this.dom_);
+          this.dom_ = $.parseHTML(this.compiledTemplateFunction(this.datacontent))[0];
+          this.container_.appendChild(this.dom_);
+          this.width_ = this.dom_.offsetWidth ;
+          this._height_ = this.dom_.offsetHeight;
+
+        }
+        CustomMarker.prototype.getDOM =function(){
           return this.dom_;
+        }   
+        CustomMarker.prototype.getContainer =function(){
+          return this.container_;
         }
-        ClassRef.CustomMarker.prototype.delete = function(){
+
+        CustomMarker.prototype.delete = function(){
           this.dom_.parentNode.removeChild(this.dom_);
+          google.maps.event.clearInstanceListeners(this.dom_);
+          google.maps.event.clearInstanceListeners(this);
           this.dom_ = null;
+          this.height_ = null;
+          this.width_ = null;
         }
+
         //======end of CustomMarker specification ===========
-        
         //=====start of CustomMarkerController specification
 
         ClassRef.CustomMarkerController = Backbone.Model.extend ({
@@ -305,23 +342,24 @@ $(document).ready(function readyCB(){
           },
           delete:function(){
             this.get("custom_marker").delete();
+            this.set("custom_marker", null); // remove reference of this custom overlay Class
 
           },
           initialize:function(){
             var ClassRef = this;
-            var mouse_events =  _.keys(this.omit('anchor','datacontent', 'latLng', 'map'));
+            var mouse_events =  _.keys(this.omit('anchor','datacontent', 'latLng', 'map','custom_marker'));
             _.each(mouse_events, function( keyname, index, list){
               ClassRef.on("change:"+keyname, function changeHandler () {
                 if ( typeof ClassRef.get(keyname) == 'function') {
                   console.log(keyname + "changed");
-                  google.maps.event.addDomListener( ClassRef.get('custom_marker').getDOM(), keyname, function listenerInvokesMe( ){
+                  google.maps.event.addDomListener( ClassRef.get('custom_marker').getContainer(), keyname, function listenerInvokesMe( ){
                     var tempfunc = ClassRef.get(keyname);
-                    tempfunc( ClassRef.get('custom_marker').getDOM());
+                    tempfunc( ClassRef.get('custom_marker').getContainer());
                   });           
                 }
                 else if (ClassRef.get(keyname) == null){
                   console.log("cancel one event handler of " + keyname);
-                  google.maps.event.clearListeners( ClassRef.get('custom_marker').getDOM() , keyname);
+                  google.maps.event.clearListeners( ClassRef.get('custom_marker').getContainer() , keyname);
 
                 }
                 else {
@@ -340,6 +378,8 @@ $(document).ready(function readyCB(){
             });
 
             ClassRef.on("change:datacontent", function datacontentChangeHandlerOfCustomMarker(){
+              ClassRef.get("custom_marker").datacontent = ClassRef.get("datacontent");
+              ClassRef.get("custom_marker").refresh();
               ClassRef.get("custom_marker").draw();
             });
             ClassRef.on("change:map", function mapChangeHandlerOfCustomMarker(){
@@ -350,13 +390,17 @@ $(document).ready(function readyCB(){
           } // end of initialize(){}
         });
         //=====end of CustomMarkerController specification
-
+        ClassRef.model.set("CustomMarker", CustomMarker);
       },
       // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
       CustomMarker:null,   // Class CustomMarker
       CustomMarkerController:null,
       addCustomMarker:function( options){
-        var temp_custom_marker = new this.CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
+        var CustomMarker = this.model.get("CustomMarker");
+
+
+
+        var temp_custom_marker = new CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
         
 
         console.log("generated temp_custom_marker");

@@ -275,11 +275,13 @@ $(document).ready(function readyCB(){
           // console.log("draw" + this.latLng);
           var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
           // var JQDOM = $(this.dom_);
+          var diff = this.dom_.offsetWidth - this.dom_.clientWidth;
           console.log(this.width_);
           // console.log(JQDOM .width());
           if (this.dom_) {
             this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';
             this.dom_.style.left = Math.round( anchor.x - this.width_ / 2).toString() + 'px';
+            $(this.dom_).outerWidth(this.width_); // I need to have this method, 
           }
 
           // generate pixel position

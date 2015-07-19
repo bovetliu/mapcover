@@ -6,7 +6,7 @@ body {
 }
 #content {
   margin-top: 45px;
-  height: 90%;
+  height: 80%;
   position: relative;
 }
 #content #mapcover {
@@ -14,7 +14,7 @@ body {
 }
 #content #mapcover #demoControlPanel {
   left: 20px;
-  top: 400px;
+  top: 200px;
   width: 200px;
   background-color: #fff;
   border: 1px solid #bbb;

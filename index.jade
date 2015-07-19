@@ -20,7 +20,7 @@ html(lang='en')
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='#') MAPCOVER.JS DEMO
+          a.navbar-brand(href='#') 15s MAPCOVER.JS DEMO
         #navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
             li.active
@@ -32,6 +32,16 @@ html(lang='en')
         // /.nav-collapse
 
     .container-fluid#content
+      .row
+        .col-md-9
+          span( class="glyphicon glyphicon-star" aria-hidden="true") 
+          | &nbsp;&nbsp; At left side of map, there is one mapcover ".mc-static2mapcontainer" UI, click zoomIn and zoomOut to zoom.
+          br
+          span( class="glyphicon glyphicon-star" aria-hidden="true") 
+          | &nbsp;&nbsp; Right click on map to show the context menu. Click on Marker1 to generate one instance of "CustomMark1". If "Content of next Marker1" is
+          | specified, then the "displayedText" of next Marker1 will have that content as "displayedText"
+          br
+          br 
       .row
         .col-md-9
           div#mapcover

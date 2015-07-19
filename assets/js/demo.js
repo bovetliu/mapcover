@@ -44,7 +44,7 @@ $(document).ready(function(){
     var custom_marker_option2 = _.clone(custom_marker_option);
     var custom_marker_option3 = _.clone(custom_marker_option);
     custom_marker_option2.latLng = new google.maps.LatLng(-33.897, 151.644);
-    custom_marker_option2.datacontent = {"displayedText":"Marker2"};```
+    custom_marker_option2.datacontent = {"displayedText":"Marker2"};
     custom_marker_option3.latLng =new google.maps.LatLng(-34.697, 150.644);
     custom_marker_option3.datacontent = {"hotelname": "JingJiang Hotel", "number":2, "price": "五毛钱"};
 
@@ -71,7 +71,7 @@ $(document).ready(function(){
       console.log(mapcover.model.get("mc_map_events")['rightclick'].latLng);
       var temp_marker_option = {
         anchor: null,
-        datacontent:{"datacontent": ($('#content-marker1').val()=="")?"New of Marker1": $('#content-marker1').val()},
+        datacontent:{"displayedText": ($('#content-marker1').val()=="")?"New of Marker1": $('#content-marker1').val()},
         latLng: mapcover.model.get("mc_map_events")['rightclick'].latLng,
         map: mapcover.model.get("map"),
         click:function(container_node){
@@ -115,7 +115,7 @@ $(document).ready(function(){
 
       $('#log').html( $('#log').html()+ "<br/>also change content of another marker")
 
-    },3100);
+    },3010);
 
 
 
@@ -136,7 +136,7 @@ $(document).ready(function(){
         mouseover:null,
         mouseout:null
       });
-      $('#log').html( $('#log').html()+ "<br/>5. disable its mouse event handlers")
+      $('#log').html( $('#log').html()+ "<br/>5. disable its mouseout, mouseover event handlers")
 
     } ,12000);
     setTimeout(function timeout(){

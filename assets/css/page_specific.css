@@ -11,11 +11,22 @@ body {
   height: 600px;
 }
 #content #mapcover #demoControlPanel {
-  left: 200px;
+  left: 20px;
   top: 400px;
-  height: 100px;
   width: 200px;
   background-color: #fff;
+  border: 1px solid #bbb;
+  padding: 0px 10px;
+  -webkit-box-shadow: 0px 3px 8px #888888;
+  box-shadow: 0px 3px 8px #888888;
+}
+#content #mapcover #demoControlPanel #zoom-in-control,
+#content #mapcover #demoControlPanel #zoom-out-control {
+  cursor: pointer;
+}
+#content #mapcover #demoControlPanel #zoom-in-control:hover,
+#content #mapcover #demoControlPanel #zoom-out-control:hover {
+  color: #FF0000;
 }
 #content #mapcover #demoContextPanel {
   width: 170px;
@@ -37,14 +48,17 @@ body {
 #content #mapcover #mapcover-map .gm-style div div .customized-marker2 .header1 {
   background-color: #FF0000;
   color: white;
+  padding: 0px 5px;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker2 .number {
   background-color: #66FF33;
   color: #000;
+  padding: 0px 5px;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker2 .price {
   background-color: #3399FF;
   color: #fff;
+  padding: 0px 5px;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker2.customized-marker-hover {
   -webkit-box-shadow: 0px 0px 10px #000000;

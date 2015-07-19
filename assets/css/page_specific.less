@@ -11,11 +11,22 @@ html,body{
     height: 600px;
 
     #demoControlPanel{
-      left: 200px;
+      left: 20px;
       top:400px;
-      height: 100px;
+ 
       width: 200px;
       background-color: #fff;
+      border:1px solid #bbb;
+      padding: 0px 10px;
+      .box-shadow(0px 3px 8px #888888);
+      #zoom-in-control,
+      #zoom-out-control{
+        cursor: pointer;
+        &:hover{
+          color:#FF0000;
+        }
+
+      } 
     }
     // here specifying, when contextmenu is shown how it would be like
     #demoContextPanel{
@@ -43,14 +54,17 @@ html,body{
             .header1{
               background-color:#FF0000;
               color:white;
+              padding:0px 5px;
             }
             .number{
               background-color: #66FF33;
               color:#000;
+              padding:0px 5px;
             }
             .price{
               background-color: #3399FF;
               color:#fff;
+              padding:0px 5px;
             }
           }
           .customized-marker2.customized-marker-hover{

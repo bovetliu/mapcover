@@ -275,7 +275,7 @@ $(document).ready(function readyCB(){
           var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
           // var JQDOM = $(this.dom_);
 
-          console.log(this.width_);
+          // console.log(this.width_);
           // console.log(JQDOM .width());
           if (this.dom_) {
             this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';

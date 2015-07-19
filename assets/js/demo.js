@@ -40,6 +40,21 @@ $(document).ready(function(){
     
 
 
+    /* assign logic to "zoom in", "zoom out"*/
+    /*zoom range: 0-18*/
+    $("#zoom-in-control").click(function zoomInControlClicked(){
+      var zoom = mapcover.model.get("map").getZoom();
+      if (zoom < 18){
+        mapcover.model.get("map").setZoom(zoom+1);
+      }
+    });
+    $("#zoom-out-control").click(function zoomOutControlClicked(){
+      var zoom = mapcover.model.get("map").getZoom();
+      if (zoom > 0){
+        mapcover.model.get("map").setZoom(zoom-1);
+      }
+    });
+
     var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
 
     temp_marker_controller.set( "mouseout", function (container_node){  

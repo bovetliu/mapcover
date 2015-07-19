@@ -143,7 +143,7 @@ $(document).ready(function(){
       temp_marker_controller.delete();
       temp_marker_controller = null;
       console.log(temp_marker_controller);
-      $('#log').html( $('#log').html()+ "<br/>6. delete it,removed its references, hoping trash collector will handle it, <br/> make one new instance of class CustomMarker2, ")
+      $('#log').html( $('#log').html()+ "<br/>6. delete it,removed its references, hoping trash collector will handle it, <br/> create one new instance of class CustomMarker2, ")
 
       mapcover.addCustomMarker("CustomMarker2"  , custom_marker_option3);
 

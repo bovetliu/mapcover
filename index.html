@@ -31,7 +31,6 @@
         <div class="col-md-9">
           <div id="mapcover">
             <div id="mapcover-map"></div>
-            <!-- the following container of ui DOMs must be height & witdh Zeroed, and absolutely positioned in a relatively positioned container, namely mapcover div-->
             <div id="demoControlPanel" class="mc-static2mapcontainer panel">I am map UI control button's container, I think one can use jQuery UI to make me look better<br><br>
               <div id="zoom-in-control" class="text-center">zoomIn</div>
               <div id="zoom-out-control" class="text-center">zoomOut</div>
@@ -42,8 +41,8 @@
               since I am not in Map Container at all! 
               <div class="text-center">
                 <div role="group" aria-label="..." class="btn-group">
-                  <button id="marker1" type="button" class="btn btn-default">Marker1</button>
-                  <button id="marker2" type="button" class="btn btn-default">Marker2</button>
+                  <button id="place-marker1" type="button" class="btn btn-default">Marker1</button>
+                  <button id="place-marker2" type="button" class="btn btn-default">Marker2</button>
                 </div>
               </div>
               <div class="form-group">
@@ -62,7 +61,7 @@
     
     <script id="customMarkerTemplate" type="text/template">
       <div class="mc-static2mapcanvas customized-marker">
-        <div class="content"><%= datacontent %></div>
+        <div class="content"><%= displayedText %></div>
         <div class="text-center remove-background"> <span aria-hidden="true" class="glyphicon glyphicon-triangle-bottom"></span></div>
       </div>
     </script>

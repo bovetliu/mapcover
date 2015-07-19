@@ -36,7 +36,21 @@
               <div id="zoom-in-control" class="text-center">zoomIn</div>
               <div id="zoom-out-control" class="text-center">zoomOut</div>
             </div>
-            <div id="demoContextPanel" class="mc-ascontextmenu panel">I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, </div>
+            <div id="demoContextPanel" class="mc-ascontextmenu panel">
+               
+              I am map context menu container, you can sytle me and add logic to me, just as normal DOM nodes.
+              since I am not in Map Container at all! 
+              <div class="text-center">
+                <div role="group" aria-label="..." class="btn-group">
+                  <button id="marker1" type="button" class="btn btn-default">Marker1</button>
+                  <button id="marker2" type="button" class="btn btn-default">Marker2</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="content-marker1">Content of next Marker1</label>
+                <input id="content-marker1" type="text" placeholder="New of Marker1!" class="form-control">
+              </div>
+            </div>
           </div>
         </div>
         <div id="log" class="col-md-3"></div>
@@ -46,7 +60,12 @@
     
     
     
-    <script id="customMarkerTemplate" type="text/template"><span class="mc-static2mapcanvas panel customized-marker"><%= datacontent %></span></script>
+    <script id="customMarkerTemplate" type="text/template">
+      <div class="mc-static2mapcanvas customized-marker">
+        <div class="content"><%= datacontent %></div>
+        <div class="text-center remove-background"> <span aria-hidden="true" class="glyphicon glyphicon-triangle-bottom"></span></div>
+      </div>
+    </script>
     <script id="AnotherClassTemplate" type="text/template">
       <div class="mc-static2mapcanvas customized-marker2">
         <div class="header1 text-center"><%=hotelname%></div>

@@ -7,9 +7,10 @@ html,body{
 
 #content{
   margin-top:45px;
+  height: 90%;
+  position: relative;
   #mapcover{
     height: 600px;
-
     #demoControlPanel{
       left: 20px;
       top:400px;
@@ -31,22 +32,43 @@ html,body{
     // here specifying, when contextmenu is shown how it would be like
     #demoContextPanel{
       
-      width:170px;
-      height: 240px;
-      border:2px solid #222;
+      width:210px;
+      padding: 10px 10px;
+      border:1px solid #bbb;
+      .box-shadow(0px 3px 5px #888888);
+      div{
+        margin-top: 5px;
+      }
     }
   
     #mapcover-map{  // map container
+
       .gm-style{
         div div{
           .customized-marker{
-            background-color: #FF5A5F; 
-            color: #fff;
-            padding:0px 5px;
-            font-size: 14px;
+            background-color: rgba(0, 255, 255, 0);
+            .content{
+              background-color: #FF5A5F; 
+              color: #fff;
+              padding:0px 5px;
+              font-size: 14px;
+            }
+            .remove-background{
+
+              padding: 0px;
+              margin: 0px;
+              margin-top: -4px;
+              color:#FF5A5F;
+              background-color: rgba(255, 255, 255, 0);
+            }
           }
           .customized-marker.customized-marker-hover{
-            background-color: #252525;
+            .content{
+              background-color: #252525;
+            }
+            .remove-background{
+              color:#252525;
+            }
           }
           .customized-marker2{
             font-size: 14px;

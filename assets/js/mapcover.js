@@ -90,11 +90,10 @@ $(document).ready(function readyCB(){
         map_options:{ center: { lat: -34.397, lng: 150.644},zoom: 8 },  
         map:null,          // map placeholder, should be initialized at initialize function of MapViewUnit
         context_menu_shown:false,
-        newest_right_click_on_map:null,  // google.maps.MouseEvent instance
-        newest_click_on_map:null,         // google.maps.MouseEvent instance
-        user_gen_class:{},
-        CustomMarker:null                // Class holder  for MapViewUnit
 
+        user_gen_classes:new Backbone.Model({}),
+        user_map_events_handlers: new Backbone.Model({}),
+        mc_map_events:{}
       },
       initialize:function(){
         /*event management*/
@@ -225,8 +224,6 @@ $(document).ready(function readyCB(){
 
       //===========context menu management ends=============================
 
-
-
       //====custom-marker management starts
       initCustomMarker:function( classname,compiledTemplateFunction ){
         // templateFunction should take 
@@ -265,7 +262,8 @@ $(document).ready(function readyCB(){
             this.width_ = this.dom_.offsetWidth ;
           }
           if (this.height_ == null){
-            this._height_ = this.dom_.offsetHeight;
+            this.height_ = this.dom_.offsetHeight;
+            if (this.height_ == 0) alert("fuck! Zero height!");
           }
 
         };
@@ -278,6 +276,7 @@ $(document).ready(function readyCB(){
           // console.log(this.width_);
           // console.log(JQDOM .width());
           if (this.dom_) {
+            console.log(this.dom_)
             this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';
             this.dom_.style.left = Math.round( anchor.x - this.width_ / 2).toString() + 'px';
             $(this.dom_).outerWidth(this.width_); // I need to have this method, 
@@ -298,7 +297,7 @@ $(document).ready(function readyCB(){
         CustomMarker.prototype.refresh = function () {
           console.log("refresh()" + this.datacontent.datacontent);
           this.container_.removeChild(this.dom_);
-          this.dom_ = $.parseHTML(this.compiledTemplateFunction(this.datacontent))[0];
+          this.dom_ = $(this.compiledTemplateFunction(this.datacontent))[0];
           this.container_.appendChild(this.dom_);
           this.width_ = this.dom_.offsetWidth ;
           this._height_ = this.dom_.offsetHeight;
@@ -322,10 +321,9 @@ $(document).ready(function readyCB(){
 
         //======end of CustomMarker specification ===========
 
-
-        ClassRef.model.set(classname, CustomMarker);
+        var user_gen_classes = ClassRef.model.get("user_gen_classes");
+        user_gen_classes.set(classname, CustomMarker);
         console.log(classname);
-        console.log(ClassRef.model.get(classname));
       },
       // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
       // CustomMarker:null,   // Class CustomMarker
@@ -419,8 +417,10 @@ $(document).ready(function readyCB(){
       CustomMarkerController:null,
 
       addCustomMarker:function( classname, options){
-        var CustomMarker = this.model.get(classname);
-        console.log(options.datacontent);
+
+        var user_gen_classes = this.model.get("user_gen_classes");
+
+        var CustomMarker = user_gen_classes.get(classname);
         var temp_custom_marker = new CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
         console.log("generated temp_custom_marker");
         // console.log(temp_custom_marker);
@@ -458,8 +458,7 @@ $(document).ready(function readyCB(){
         var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event.latLng);
         // console.log("left click at pixel: " + pixel);
         ClassRef.contextMenuMeetMouse(pixel, "click");
-        ClassRef.model.set("newest_click_on_map", event);
-
+        ClassRef.model.get("mc_map_events")["click"] = event;
       },
       mapRightClickHandler:function(event){
         // console.log("right click at: " + event.latLng);
@@ -467,7 +466,7 @@ $(document).ready(function readyCB(){
         var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event.latLng);
         // console.log("right click at pixel: " + pixel);
         ClassRef.contextMenuMeetMouse(pixel, "rightclick");
-        ClassRef.model.set("newest_right_click_on_mapw",event);
+        ClassRef.model.get("mc_map_events")["rightclick"] = event;
       },
 
 
@@ -486,8 +485,5 @@ $(document).ready(function readyCB(){
     var map_view_unit = new MapViewUnit({model: map_control_unit_model}); 
 
     return map_view_unit;
-
   }) ( );
-  
- 
 }); // end of ready();

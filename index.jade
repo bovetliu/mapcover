@@ -43,7 +43,16 @@ html(lang='en')
               br
               div.text-center#zoom-in-control zoomIn
               div.text-center#zoom-out-control zoomOut
-            div#demoContextPanel.mc-ascontextmenu.panel I am map context menu container, you can sytle me and add logic to me, just like a normal DOM, 
+            div#demoContextPanel.mc-ascontextmenu.panel 
+              | I am map context menu container, you can sytle me and add logic to me, just as normal DOM nodes.
+              | since I am not in Map Container at all! 
+              .text-center
+                .btn-group(role='group', aria-label='...')
+                  button.btn.btn-default#marker1(type='button') Marker1
+                  button.btn.btn-default#marker2(type='button') Marker2
+              .form-group
+                label(for='content-marker1') Content of next Marker1
+                input#content-marker1.form-control(type='text', placeholder='New of Marker1!')
 
             
         .col-md-3#log
@@ -56,8 +65,11 @@ html(lang='en')
 
 
     script#customMarkerTemplate(type="text/template")
-      span.mc-static2mapcanvas.panel.customized-marker
-        |<%= datacontent %>
+      div.mc-static2mapcanvas.customized-marker
+        div.content <%= datacontent %>
+        .text-center.remove-background 
+          span.glyphicon.glyphicon-triangle-bottom(aria-hidden='true')
+
 
     script#AnotherClassTemplate(type="text/template")
       div.mc-static2mapcanvas.customized-marker2

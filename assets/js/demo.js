@@ -1,6 +1,9 @@
 $(document).ready(function(){
  
   _.defer(function saferun () {
+
+    $('#mapcover').height( $('#content').height() );
+
     var custom_marker_option = {
       anchor: null,
       datacontent:{"datacontent":"This Marker1"},
@@ -54,6 +57,33 @@ $(document).ready(function(){
         mapcover.model.get("map").setZoom(zoom-1);
       }
     });
+
+    /*assign logic to context menu*/
+    $("#marker1").click(function placeMarker1(){
+      console.log("placing marker1");
+      /*when this function is invoked, go to mapcover.mode.get("mc_map_events")['rightclick']*/
+      console.log(mapcover.model.get("mc_map_events")['rightclick'].latLng);
+      var temp_marker_option = {
+        anchor: null,
+        datacontent:{"datacontent": ($('#content-marker1').val()=="")?"New of Marker1": $('#content-marker1').val()},
+        latLng: mapcover.model.get("mc_map_events")['rightclick'].latLng,
+        map: mapcover.model.get("map"),
+        click:function(container_node){
+          alert("I am created By you via ContextMenu");
+        }
+      };
+      mapcover.addCustomMarker("CustomMarker1"  ,temp_marker_option);
+      mapcover.hideContextMenu();
+
+    });
+
+    $("#marker2").click(function placeMarker1(){
+      console.log("placing marker2");
+      mapcover.hideContextMenu();
+      alert("try impement one yourself by looking at #marker1 click function at demo.js,");
+
+    });
+
 
     var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
 

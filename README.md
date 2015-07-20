@@ -107,7 +107,7 @@ var custom_marker_option = {
   }
 };
 ```
-With this option object you can instantiate one instance of the CustomMarker class (which I have already templated basic javascript logic to make it behave like an marker, but still allow you to FULLY customize it.)
+With this option object you can instantiate one instance of the CustomMarker class (which I have already templated basic javascript logic to make it behave like a marker, but still allow you to FULLY customize it.)
 
 the content of attribute 'datacontent' specifies the data which is necessary for the compiled template function of CustomMarker Class to generate HTML for instances of CustomMarker.
 

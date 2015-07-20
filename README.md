@@ -40,7 +40,10 @@ Now lets's see the content of  ` $('#customMarkerTemplate').html()`
 ```html
 <div class="mc-static2mapcanvas customized-marker">
   <div class="content"><%= displayedText %></div>
-  <div class="text-center remove-background"> <span aria-hidden="true" class="glyphicon glyphicon-triangle-bottom"></span></div>
+  <div class="text-center remove-background">
+    <span aria-hidden="true" class="glyphicon glyphicon-triangle-bottom">
+    </span>
+  </div>
 </div>
 ```
 and the less styling it
@@ -71,11 +74,18 @@ and the less styling it
   }
 }
 ```
-With those HTML template and Less(css), you can create one custom Map Marker like this
+With those HTML template and Less(css), Soon you will create one custom Map Marker like this.
 
 ![alt text](https://github.com/bovetliu/mapcover/blob/master/assets/img/custom_marker_ss.png "Screen Shot of one custom marker")
 
 
+
+
+
+
+
+Somewhat like using google map API, before creating one google marker, you need to pass in an option object.
+The same thing applies here. Following shows the option object for a `Custom Marker`
 
 ```javascript
 var custom_marker_option = {
@@ -102,10 +112,11 @@ var custom_marker_option = {
   }
 };
 ```
-Somewhat like using google map API, you need to pass in an option object when you "new google.maps.Marker(option)".
-This is the option object needed when you instantiate one instance of the CustomMarker class (which I have already templated basic javascript logic to make it behave like an marker, but still allow you to FULLY customize it.)
+With this option object you can instantiate one instance of the CustomMarker class (which I have already templated basic javascript logic to make it behave like an marker, but still allow you to FULLY customize it.)
 
 the content of attribute 'datacontent' specifies the data which is necessary for the compiled template function of CustomMarker Class to generate HTML for instances of CustomMarker.
+
+
 
 ```javascript
 var custom_marker_option2 = _.clone(custom_marker_option);
@@ -119,44 +130,60 @@ above code show just create two different marker options. But please pay attenti
 the `custom_marker_options3` is for `CustomMarker2`, so it has different structure in terms of `datacontent` property.
 
 
-
+**Now comes the code creating an instance of CustomMarker1**
 ```javascript
 var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
 ```
-Above code shows adding one instance of `CustomMarker1` to the map using `custom_marker_option`. Also `addCustomMarker()` return one controller for this instance of `CustomMarker1`
+Also `addCustomMarker()` return one controller for this instance of `CustomMarker1`
 
 
 
+
+
+By setting the `latLng` property of controller, the geoposition of this marker is changed.
 ```javascript
 setTimeout(function timeout(){
   temp_marker_controller.set("latLng",new google.maps.LatLng(-33.397, 150.644) );
   $('#log').html( $('#log').html()+ "<br/>2. moved one custom marker")
 },3000);
 ```
-By setting the `latLng` property of controller, the geoposition of this marker is changed.
 
 
+
+
+By setting `map` null, the marker is temporarily removed from DOM tree and hidden.
 ```javascript
   temp_marker_controller.set({ map:null });
 ```
-By setting `map` null, the marker is temporarily removed from DOM tree and hidden.
 
 
+
+
+I store the map object in the model of Mapcover. By setting map to the working map, marker appears.
 ```javascript
 temp_marker_controller.set({ map:mapcover.model.get("map")});
 ```
-I store the map object in the model of Mapcover. By setting map to the working map, marker appears.
 
 
+
+
+
+
+
+Remove these two event handlers. Remember, when I create the first marker option, I specified three event handlers respectively for 'mouseover', 'mouseout', 'click'. For a complete reference of MouseEvent, please go to Google Map API V3 reference. 
 ```javascript
 temp_marker_controller.set({
   mouseover:null,
   mouseout:null
 });
 ```
-Remove these two event handlers. Remember, when I create the first marker option, I specified three event handlers respectively for 'mouseover', 'mouseout', 'click'. For a complete reference of MouseEvent, please go to Google Map API V3 reference. 
 
 
+
+
+
+Attempting delete the first instance of Class CustomMarker1. 
+At the same time, add one instance of CustomMarker2 with `custom_marker_option3` loaded
 ```javascript
 setTimeout(function timeout(){
   temp_marker_controller.delete();
@@ -164,7 +191,5 @@ setTimeout(function timeout(){
   mapcover.addCustomMarker("CustomMarker2"  , custom_marker_option3);
 } ,15000);
 ```
-Attempting delete the first instance of Class CustomMarker1. 
-At the same time, add one instance of CustomMarker2 with `custom_marker_option3` loaded
 
 

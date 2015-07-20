@@ -32,9 +32,8 @@ mapcover.initCustomMarker( "CustomMarker2", _.template($('#AnotherClassTemplate'
 create two Classes for two kinds of CustomMarker, using two different templates specified in "index.html"
 You are free to pass in any compiled template function as argument of initCustomMarker(). As long as 
 the compiled template functions has usage similar with following
-```javascript
-var generatedText = compiledFunction( dataobj);
-```
+>var generatedText = compiledFunction( dataobj);
+
 
 Now lets's see the content of  ` $('#customMarkerTemplate').html()`
 ```html

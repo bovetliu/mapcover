@@ -36,6 +36,45 @@ the compiled template functions has usage similar with following
 var generatedText = compiledFunction( dataobj);
 ```
 
+Now lets's see the content of  ` $('#customMarkerTemplate').html()`
+```html
+<div class="mc-static2mapcanvas customized-marker">
+  <div class="content"><%= displayedText %></div>
+  <div class="text-center remove-background"> <span aria-hidden="true" class="glyphicon glyphicon-triangle-bottom"></span></div>
+</div>
+```
+and the less styling it
+```css
+.customized-marker{
+  background-color: rgba(0, 255, 255, 0);
+  .content{
+    background-color: #FF5A5F; 
+    color: #fff;
+    padding:0px 5px;
+    font-size: 14px;
+  }
+  .remove-background{
+
+    padding: 0px;
+    margin: 0px;
+    margin-top: -4px;
+    color:#FF5A5F;
+    background-color: rgba(255, 255, 255, 0);
+  }
+}
+.customized-marker.customized-marker-hover{
+  .content{
+    background-color: #252525;
+  }
+  .remove-background{
+    color:#252525;
+  }
+}
+```
+With those HTML template and Less(css), you can create one custom Map Marker like this
+
+
+
 
 ```javascript
 var custom_marker_option = {

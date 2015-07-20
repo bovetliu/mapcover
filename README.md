@@ -73,6 +73,7 @@ and the less styling it
 ```
 With those HTML template and Less(css), you can create one custom Map Marker like this
 
+![alt text](https://github.com/bovetliu/mapcover/blob/master/assets/img/custom_marker_ss.png "Screen Shot of one custom marker")
 
 
 

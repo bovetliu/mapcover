@@ -81,12 +81,8 @@ With those HTML template and Less(css), Soon you will create one custom Map Mark
 
 
 
-
-
-
 Somewhat like using google map API, before creating one google marker, you need to pass in an option object.
 The same thing applies here. Following shows the option object for a `Custom Marker`
-
 ```javascript
 var custom_marker_option = {
   anchor: null,
@@ -126,7 +122,7 @@ custom_marker_option2.datacontent = {"displayedText":"Marker2"};
 custom_marker_option3.latLng =new google.maps.LatLng(-34.697, 150.644);
 custom_marker_option3.datacontent = {"hotelname": "JingJiang Hotel", "number":2, "price": "五毛钱"};
 ```
-above code show just create two different marker options. But please pay attention, 
+above code show creating another two different marker options. But please pay attention, 
 the `custom_marker_options3` is for `CustomMarker2`, so it has different structure in terms of `datacontent` property.
 
 
@@ -149,25 +145,16 @@ setTimeout(function timeout(){
 ```
 
 
-
-
 By setting `map` null, the marker is temporarily removed from DOM tree and hidden.
 ```javascript
   temp_marker_controller.set({ map:null });
 ```
 
 
-
-
 I store the map object in the model of Mapcover. By setting map to the working map, marker appears.
 ```javascript
 temp_marker_controller.set({ map:mapcover.model.get("map")});
 ```
-
-
-
-
-
 
 
 Remove these two event handlers. Remember, when I create the first marker option, I specified three event handlers respectively for 'mouseover', 'mouseout', 'click'. For a complete reference of MouseEvent, please go to Google Map API V3 reference. 
@@ -179,10 +166,7 @@ temp_marker_controller.set({
 ```
 
 
-
-
-
-Attempting delete the first instance of Class CustomMarker1. 
+Attempting deleting the first instance of Class CustomMarker1. 
 At the same time, add one instance of CustomMarker2 with `custom_marker_option3` loaded
 ```javascript
 setTimeout(function timeout(){

@@ -1,0 +1,28 @@
+
+
+注意Leaflet/Leaflet on Github
+
+Leaflet/src/layer/marker
+
+
+L.Class
+https://www.mapbox.com/mapbox.js/api/v2.2.1/l-class/
+对应源码: https://github.com/Leaflet/Leaflet/blob/master/src/core/Class.js
+
+L.Evented 继承L.Class 
+
+L.Evented Class: https://github.com/Leaflet/Leaflet/blob/45034155bdf8d958554b43ed8dbd7020df9ca6ab/src/core/Events.js
+
+
+Layer继承 L.Evented
+L.Layer源码 https://github.com/Leaflet/Leaflet/blob/master/src/layer/Layer.js
+
+
+L.Marker 继承L.Layer
+https://www.mapbox.com/mapbox.js/api/v2.2.1/l-marker/  
+对应源码:https://github.com/Leaflet/Leaflet/blob/master/src/layer/marker/Marker.js
+
+
+目标,写出可以带HTML Template Function, offseted anchor point(元素呈现都在左上,但是一般拿到的坐标都在中下,在呈现的时候,坐标要作一个Offset,才能让元素的中下那个点对应鼠标点击位置) 的customizable marker
+
+

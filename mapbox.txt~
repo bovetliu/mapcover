@@ -8,7 +8,7 @@ Leaflet/src/layer/marker
 L.Class
 https://www.mapbox.com/mapbox.js/api/v2.2.1/l-class/
 对应源码: https://github.com/Leaflet/Leaflet/blob/master/src/core/Class.js
-阅读L.Evented 之前,先阅读 L.Util & L.Handler 之源码实现 
+阅读L.Evented 之前,先阅读 L.Util 
 
 L.Evented 继承L.Class 
 

@@ -9,14 +9,6 @@ prepare custom_marker_option   object
 var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
 
 
-
-
-
-
-
-
-
-
 // google map dom tree stucture
 #mapcover-map(style='position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);')
   .gm-style(style='position: absolute; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%; z-index: 0;')

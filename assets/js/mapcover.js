@@ -159,16 +159,25 @@ $(document).ready(function readyCB(){
         } // end of "if (ClassRef.model.get("map_vender") == "google")"
         else if (ClassRef.model.get("map_vender") == "mapbox") {
           L.mapbox.accessToken = 'pk.eyJ1IjoiYm93ZWlsaXUyMDE0IiwiYSI6IjYyOGJkN2YwOTZmZDk3ZmFlYWU3ZTZkMTM3N2MzNTI2In0.MISpq-9bA6S3R1DHeGbGow';
-          
           var map = L.mapbox.map(id_of_map_container, 'mapbox.streets').setView(mapcover_options.latLng, mapcover_options.initial_zoom);
-
           ClassRef.model.set("map", map)
+          map.on("click", function mapboxClickHandler (event) {
+            ClassRef.mapLeftClickHandler(event);
+          });
+          map.on("contextmenu", function mapboxCMentuHandler(event){
+            ClassRef.mapRightClickHandler(event);
+          });
+
+          map.on("dragstart", function(event){
+            ClassRef.hideContextMenu();
+          })
+
         }
       },
 
       /*context menu needs to be specially managed, one mapcover can only has one context menu*/
       //===========context menu management starts =============================
-      $context_menu:$('.mc-ascontextmenu'),
+      $context_menu:$('#'+id_of_map_cover_div).find('.mc-ascontextmenu'),
 
       pixelInContextMenu:function( pixel ){
         // for google, pixel is google.maps.point
@@ -192,7 +201,9 @@ $(document).ready(function readyCB(){
       },
 
       hideContextMenu:function(){
-        this.$context_menu.hide();
+        if (this.$context_menu.length >0) {
+          this.$context_menu.hide();
+        }
       },
 
       contextMenuMeetMouse:function(pixel, mouse_event){
@@ -200,14 +211,14 @@ $(document).ready(function readyCB(){
         if ( ClassRef.$context_menu &&  ClassRef.$context_menu.length == 1){
           switch(mouse_event){
             case "click":
-
+              console.log("click on map");
               if ( ClassRef.model.get('context_menu_shown') && !ClassRef.pixelInContextMenu(pixel) ){
                 ClassRef.hideContextMenu();
                 ClassRef.model.set("context_menu_shown", false); // controller event management will handle this
               }        
               break;
             case "rightclick":
-              console.log("valid context menu");
+              // console.log("valid context menu");
               if ( !ClassRef.model.get('context_menu_shown') ){   // context menu currently shown situation
                 ClassRef.showContextMenu(pixel);
                 ClassRef.model.set("context_menu_shown", true); // controller event management will handle this
@@ -273,7 +284,7 @@ $(document).ready(function readyCB(){
             }
 
           };
-          CustomMarker.prototype.draw = function(){
+          CustomMarker.prototype.draw = function(){   // correspons to _reset of mapbox custom_marker
             var overlayProjection = this.getProjection();
             // console.log("draw" + this.latLng);
             var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
@@ -301,7 +312,7 @@ $(document).ready(function readyCB(){
           };
 
           CustomMarker.prototype.refresh = function () {
-            console.log("refresh()" + this.datacontent.datacontent);
+            console.log("refresh()" + this.datacontent);
             this.container_.removeChild(this.dom_);
             this.dom_ = $(this.compiledTemplateFunction(this.datacontent))[0];
             this.container_.appendChild(this.dom_);
@@ -334,9 +345,19 @@ $(document).ready(function readyCB(){
             includes: L.Mixin.Events,
                                  //anchor,datacontent, latLng, map
             initialize: function ( anchor,datacontent, latLng, map, options) { 
+              this._datacontent = datacontent;
               this._latLng = latLng;
-              this._anchor = anchor
+              this._anchor = anchor;
+              this._map = map;
+              this._container = null;
+              this._dom = null;
               L.setOptions(this, options);
+            },
+            refresh:function(){
+              console.log("refresh(): " + this._datacontent);
+              this._container.removeChild(this._dom);
+              this._dom = $(this.compiledTemplateFunction(this._datacontent))[0];
+              this._container.appendChild(this._dom);
             },
 
             // this function will be called internally, and be called only once
@@ -359,7 +380,8 @@ $(document).ready(function readyCB(){
             // _initContainer will be called in onAdd()
             _initContainer: function () {  
               this._container = L.DomUtil.create('div', ' ');
-              this._container.innerHTML = this.compiledTemplateFunction(this.datacontent);
+              this._dom = $(this.compiledTemplateFunction(this._datacontent))[0];
+              this._container.appendChild(this._dom);
 
               if (this._map.options.zoomAnimation && L.Browser.any3d) {   // if current browser support
                 L.DomUtil.addClass(this._container, 'leaflet-zoom-animated');
@@ -370,13 +392,14 @@ $(document).ready(function readyCB(){
 
             compiledTemplateFunction: compiledTemplateFunction,
 
-            relocateAnchor:function(point, container){
-              console.log(this._container.clientHeight);
-              var offset_height = Math.round(this._container.clientHeight * this._anchor.y/ 100 -8 );
-              var offset_width = Math.round(this._container.clientWidth * this._anchor.x/100);
-              point.x = point.x - offset_width;
-              point.y = point.y - offset_height;
-              console.log(point);
+            // TODO: following function needs to tuned outside
+            relocateAnchor:function(point, dom){
+              if (this._anchor) {
+                var offset_height = Math.round(dom.clientHeight * this._anchor.y/ 100 -8 );
+                var offset_width = Math.round(dom.clientWidth * this._anchor.x/100);
+                point.x = point.x - offset_width;
+                point.y = point.y - offset_height;
+              } 
               return point;
             },
 
@@ -385,7 +408,7 @@ $(document).ready(function readyCB(){
               // e.zoom is target zoom, when this function is called, zoom action has not finished
               var map = this._map,
                   topLeft = map._latLngToNewLayerPoint(this._latLng, e.zoom, e.center);
-              L.DomUtil.setPosition(this._container, this.relocateAnchor(topLeft, this._container));
+              L.DomUtil.setPosition(this._container, this.relocateAnchor(topLeft, this._dom));
             },
 
             //main behavior of this _reset() is to change size
@@ -393,7 +416,7 @@ $(document).ready(function readyCB(){
             _reset: function () {
               var container   = this._container,
                   topLeft = this._map.latLngToLayerPoint(this._latLng);
-              L.DomUtil.setPosition(container, this.relocateAnchor(topLeft, this._container));
+              L.DomUtil.setPosition(container, this.relocateAnchor(topLeft, this._dom));
             },
 
 
@@ -406,7 +429,7 @@ $(document).ready(function readyCB(){
                 map.off('zoomanim', this._animateZoom, this);
               }
             },
-
+            //convenience method
             addTo: function (map) {
               map.addLayer(this);
               return this;
@@ -415,6 +438,13 @@ $(document).ready(function readyCB(){
             getAttribution: function () {
               return this.options.attribution;
             },
+            getContainer:function(){
+              return this._container;
+            },
+            getDOM: function(){
+              return this._dom;
+            }
+
           });
         }// else if (ClassRef.model.get("map_vender") == "mapbox") {
         //======end of mapbox CustomMarker specification
@@ -428,37 +458,40 @@ $(document).ready(function readyCB(){
       
       _initCustomMarkerController:function(){
         //=====start of CustomMarkerController specification
-        var ClassRef = this;
+        // this method build controller class of CustomMarker
+        var ClassRefOuter = this;
 
-        if (ClassRef.model.get("map_vender") == "google"){
-          ClassRef.CustomMarkerController = Backbone.Model.extend ({
-            //when creating instance, there is custom_marker 
-            defaults:{
-              click:null,       // function placeholder
-              dblclick:null,     // function placeholder
-              drag:null,        // function placeholder
-              dragend:null,     // ...
-              dragstart:null,
-              mousemove:null,
-              mouseout:null,
-              mouseover:null,
-              rightclick:null,
+        ClassRefOuter.CustomMarkerController = Backbone.Model.extend ({
+          //when creating instance, there is custom_marker 
+          defaults:{
+            click:null,       // function placeholder
+            dblclick:null,     // function placeholder
+            drag:null,        // function placeholder
+            dragend:null,     // ...
+            dragstart:null,
+            mousemove:null,
+            mouseout:null,
+            mouseover:null,
+            rightclick:null,
 
-              anchor:null,
-              datacontent:null,
-              latLng:null,
-              map:null
-            },
-            delete:function(){
-              this.get("custom_marker").delete();
-              this.set("custom_marker", null); // remove reference of this custom overlay Class
+            anchor:null,
+            datacontent:null,
+            latLng:null,
+            map:null
+          },
+          delete:function(){
+            this.get("custom_marker").delete();
+            this.set("custom_marker", null); // remove reference of this custom overlay Class
 
-            },
-            initialize:function(){
-              var ClassRef = this;
-              var mouse_events =  _.keys(this.omit('anchor','datacontent', 'latLng', 'map','custom_marker'));
+          },
+          initialize:function(){
+            var ClassRef = this;
+            var mouse_events =  _.keys(this.omit('anchor','datacontent', 'latLng', 'map','custom_marker'));
+
+            if (ClassRefOuter.model.get("map_vender") == "google") {
               _.each(mouse_events, function( keyname, index, list){
                 ClassRef.on("change:"+keyname, function changeHandler () {
+
                   if ( typeof ClassRef.get(keyname) == 'function') {
                     console.log(keyname + "changed");
                     google.maps.event.addDomListener( ClassRef.get('custom_marker').getContainer(), keyname, function listenerInvokesMe( ){
@@ -471,8 +504,9 @@ $(document).ready(function readyCB(){
                     google.maps.event.clearListeners( ClassRef.get('custom_marker').getContainer() , keyname);
 
                   }
+
                   else {
-                    console.log("content of " + keyname + " is not function");
+                    console.log("content of " + keyname + " is not event");
                   }
                 });
               });  // _.each(...);
@@ -496,11 +530,62 @@ $(document).ready(function readyCB(){
                 ClassRef.get("custom_marker").setMap( ClassRef.get("map") );
                 // ClassRef.get("custom_marker").draw();
               });
-            } // end of initialize(){}
-          });
-        } //if (ClassRef.model.get("map_vender") == "google"){
+            } // if (ClassRef.model.get("map_vender") == "google") {
+
+            else if (ClassRefOuter.model.get("map_vender") == "mapbox") {
+              _.each(mouse_events, function( keyname, index, list){
+                ClassRef.on("change:"+keyname, function changeHandler () {
+                  if ( typeof ClassRef.get(keyname) == 'function') {
+                    console.log(keyname + "changed");
+                    L.DomEvent.addListener( ClassRef.get('custom_marker').getContainer(), keyname, function listenerInvokesMe( ){
+                      
+                      var tempfunc = ClassRef.get(keyname);
+                      tempfunc( ClassRef.get('custom_marker').getContainer());
+                    });           
+                  }
+                  else if (ClassRef.get(keyname) == null){
+                    console.log("cancel one event handler of " + keyname);
+                    L.DomEvent.removeListener( ClassRef.get('custom_marker').getContainer() , keyname);
+                  }
+
+                  else {
+                    console.log("content of " + keyname + " is not event");
+                  }
+                });
+              });  // _.each(...);
+
+              ClassRef.on("change:latLng", function latLngChangeHandlerOfCustomMarker () {
+                if (ClassRef.get("latLng").lat && ClassRef.get("latLng").lng){
+                  ClassRef.get("custom_marker")._latLng = ClassRef.get("latLng");
+                  ClassRef.get("custom_marker")._reset();
+                }else {
+                  console.error("latLngChangeHandlerOfCustomMarker() encountered invalid latLng");
+                }
+              });
+
+              ClassRef.on("change:datacontent", function datacontentChangeHandlerOfCustomMarker(){
+                ClassRef.get("custom_marker")._datacontent = ClassRef.get("datacontent");
+                ClassRef.get("custom_marker").refresh();
+                ClassRef.get("custom_marker")._reset();
+              });
+
+              ClassRef.on("change:map", function mapChangeHandlerOfCustomMarker(){
+                console.log("controller map changed");
+                if (ClassRef.get("map")){
+                  ClassRef.get("custom_marker").addTo( ClassRef.get("map") );
+                }
+                else {
+                  ClassRef.get("map").removeLayer( ClassRef.get("custom_marker") );
+                }
+                // ClassRef.get("custom_marker").draw();
+              });
+            }  
+          } // end of initialize(){}
+        });  // end of ClassRef.CustomMarkerController = Backbone.Model.extend ({
+
         // end of = CustomMarkerController class definition
       },
+
       CustomMarkerController:null,
 
       addCustomMarker:function( classname, options){
@@ -509,7 +594,10 @@ $(document).ready(function readyCB(){
 
         var CustomMarker = user_gen_classes.get(classname);
         var temp_custom_marker = new CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
-        console.log("generated temp_custom_marker");
+        console.log("generated temp_custom_marker: ");
+        if( this.model.get("map_vender") == "mapbox"){
+          temp_custom_marker.addTo(this.model.get("map"));
+        }
         // console.log(temp_custom_marker);
         var temp_custom_marker_controller = new this.CustomMarkerController({ "custom_marker": temp_custom_marker});
         _.each(_.keys(_.omit(options, 'anchor', 'datacontent', 'latLng', 'map')), function(keyname, index, ar){
@@ -530,30 +618,35 @@ $(document).ready(function readyCB(){
       },
       //====custom-marker management ends
 
-      getPixelInMapcoverContainerFromLatLng:function (latLng){
+      getPixelInMapcoverContainerFromLatLng:function (event){
         var ClassRef = this;
         var tbr = null;
         if (ClassRef.model.get("map_vender") == "google"){
-          tbr = ClassRef.mmoverlay.getProjection().fromLatLngToContainerPixel(latLng); // for google,  the returned Object is google.maps.Point
+          tbr = ClassRef.mmoverlay.getProjection().fromLatLngToContainerPixel(event.latLng); // for google,  the returned Object is google.maps.Point
+        }
+        else if (ClassRef.model.get("map_vender") == "mapbox"){
+          tbr = ClassRef.model.get('map').latLngToContainerPoint(event.latlng);
         }
         return tbr; 
       },
 
       mapLeftClickHandler:function(event){
-        // console.log("left click at: " + event.latLng);
+        console.log("left click at: " + event.latlng);
         var ClassRef = this;
-        var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event.latLng);
+        var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event);
         // console.log("left click at pixel: " + pixel);
         ClassRef.contextMenuMeetMouse(pixel, "click");
         ClassRef.model.get("mc_map_events")["click"] = event;
+
       },
       mapRightClickHandler:function(event){
-        // console.log("right click at: " + event.latLng);
+        console.log(event);
         var ClassRef = this;
-        var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event.latLng);
-        // console.log("right click at pixel: " + pixel);
+        var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event);
         ClassRef.contextMenuMeetMouse(pixel, "rightclick");
         ClassRef.model.get("mc_map_events")["rightclick"] = event;
+
+
       },
 
 

@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="assets/css/page_specific.css">
     <!-- import google map-->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEgp09_feK-aKfo_2h3tOcWfzbrByZwDw&amp;libraries=geometry"></script>
+    <!-- import mapbox(leaflet)-->
+    <script src="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css" rel="stylesheet">
   </head>
   <body>
     <!--this is just a bootstrap nav,-->
@@ -34,13 +37,13 @@
       </div>
       <div class="row">
         <div class="col-md-9">
-          <div id="mapcover">
-            <div id="mapcover-map"></div>
-            <div id="demoControlPanel" class="mc-static2mapcontainer panel">I am map UI control button's container, I think one can use jQuery UI to make me look better<br><br>
+          <div id="mapcover" class="mapcover">
+            <div id="mapcover-map" class="mapcover-map"></div>
+            <div class="demoControlPanel mc-static2mapcontainer panel">I am map UI control button's container, I think one can use jQuery UI to make me look better<br><br>
               <div id="zoom-in-control" class="text-center">zoomIn</div>
               <div id="zoom-out-control" class="text-center">zoomOut</div>
             </div>
-            <div id="demoContextPanel" class="mc-ascontextmenu panel">
+            <div class="demoContextPanel mc-ascontextmenu panel">
                
               I am map context menu container, you can sytle me and add logic to me, just as normal DOM nodes.
               since I am not in Map Container at all! 
@@ -59,11 +62,44 @@
         </div>
         <div id="log" class="col-md-3"></div>
       </div>
+      <div class="row">
+        <div class="col-md-12"><br><br><br>
+          <h4>Demo of mapcover for mapbox</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-9">
+          <div id="mapcover-mapbox" class="mapcover">
+            <div id="mapcover-map-mapbox" class="mapcover-map"></div>
+            <div class="demoControlPanel mc-static2mapcontainer panel">I am map UI control button's container, I think one can use jQuery UI to make me look better<br><br>
+              <div id="zoom-in-control-mapbox" class="text-center">zoomIn</div>
+              <div id="zoom-out-control-mapbox" class="text-center">zoomOut</div>
+            </div>
+            <div class="demoContextPanel mc-ascontextmenu panel">
+               
+              I am map context menu container, you can sytle me and add logic to me, just as normal DOM nodes.
+              since I am not in Map Container at all! 
+              <div class="text-center">
+                <div role="group" aria-label="..." class="btn-group">
+                  <button id="place-marker1-mapbox" type="button" class="btn btn-default">Marker1</button>
+                  <button id="place-marker2-mapbox" type="button" class="btn btn-default">Marker2</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="content-marker1">Content of next Marker1</label>
+                <input id="content-marker1-mapbox" type="text" placeholder="New of Marker1!" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+      <footer><br><br>this is footer</footer>
     </div>
     <!-- /.container-->
     
     
-    
+    <!-- containers -->
     <script id="customMarkerTemplate" type="text/template">
       <div class="mc-static2mapcanvas customized-marker">
         <div class="content"><%= displayedText %></div>
@@ -80,9 +116,7 @@
     <!--
     Bootstrap core JavaScript
     ==================================================
-    
     -->
-    <!-- Placed at the end of the document so the pages load faster-->
     <script src="./assets/js/jquery.min.js"></script>
     <script src="./assets/js/bootstrap.min.js"></script>
     <!--following are underscore and backbone==================================================

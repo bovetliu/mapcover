@@ -6,29 +6,29 @@ map UI elements. Mapcover also introduces contextmenu.
 
 Author: Bowei Liu
 */
-#mapcover {
+.mapcover {
   position: relative;
 }
-#mapcover .mc-ascontextmenu,
-#mapcover .mc-static2mapcontainer {
+.mapcover .mc-ascontextmenu,
+.mapcover .mc-static2mapcontainer {
   z-index: 1;
 }
-#mapcover .mc-ascontextmenu div,
-#mapcover .mc-static2mapcontainer div {
+.mapcover .mc-ascontextmenu div,
+.mapcover .mc-static2mapcontainer div {
   z-index: 1;
 }
-#mapcover .mc-static2mapcontainer {
+.mapcover .mc-static2mapcontainer {
   position: absolute;
 }
-#mapcover .mc-ascontextmenu {
+.mapcover .mc-ascontextmenu {
   display: none;
   position: absolute;
 }
-#mapcover #mapcover-map {
+.mapcover .mapcover-map {
   position: relative;
   height: 100%;
   width: 100%;
 }
-#mapcover #mapcover-map .mc-static2mapcanvas {
+.mapcover .mapcover-map .mc-static2mapcanvas {
   position: absolute;
 }

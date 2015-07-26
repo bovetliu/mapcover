@@ -4,15 +4,17 @@ body {
   width: 100%;
   height: 100%;
 }
+.percent90height {
+  height: 90%;
+}
 #content {
   margin-top: 45px;
-  height: 80%;
   position: relative;
 }
 #content #mapcover {
   height: 600px;
 }
-#content #mapcover #demoControlPanel {
+#content #mapcover .demoControlPanel {
   left: 20px;
   top: 200px;
   width: 200px;
@@ -22,22 +24,22 @@ body {
   -webkit-box-shadow: 0px 3px 8px #888888;
   box-shadow: 0px 3px 8px #888888;
 }
-#content #mapcover #demoControlPanel #zoom-in-control,
-#content #mapcover #demoControlPanel #zoom-out-control {
+#content #mapcover .demoControlPanel #zoom-in-control,
+#content #mapcover .demoControlPanel #zoom-out-control {
   cursor: pointer;
 }
-#content #mapcover #demoControlPanel #zoom-in-control:hover,
-#content #mapcover #demoControlPanel #zoom-out-control:hover {
+#content #mapcover .demoControlPanel #zoom-in-control:hover,
+#content #mapcover .demoControlPanel #zoom-out-control:hover {
   color: #FF0000;
 }
-#content #mapcover #demoContextPanel {
+#content #mapcover .demoContextPanel {
   width: 210px;
   padding: 10px 10px;
   border: 1px solid #bbb;
   -webkit-box-shadow: 0px 3px 5px #888888;
   box-shadow: 0px 3px 5px #888888;
 }
-#content #mapcover #demoContextPanel div {
+#content #mapcover .demoContextPanel div {
   margin-top: 5px;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker {
@@ -83,4 +85,35 @@ body {
 #content #mapcover #mapcover-map .gm-style div div .customized-marker2.customized-marker-hover {
   -webkit-box-shadow: 0px 0px 10px #000000;
   box-shadow: 0px 0px 10px #000000;
+}
+#content #mapcover-mapbox #mapcover-map-mapbox {
+  background-color: #bbb;
+}
+#content #mapcover-mapbox .demoControlPanel {
+  left: 20px;
+  top: 200px;
+  width: 200px;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  padding: 0px 10px;
+  -webkit-box-shadow: 0px 3px 8px #888888;
+  box-shadow: 0px 3px 8px #888888;
+}
+#content #mapcover-mapbox .demoControlPanel #zoom-in-control-mapbox,
+#content #mapcover-mapbox .demoControlPanel #zoom-out-control-mapbox {
+  cursor: pointer;
+}
+#content #mapcover-mapbox .demoControlPanel #zoom-in-control-mapbox:hover,
+#content #mapcover-mapbox .demoControlPanel #zoom-out-control-mapbox:hover {
+  color: #FF0000;
+}
+#content #mapcover-mapbox .demoContextPanel {
+  width: 210px;
+  padding: 10px 10px;
+  border: 1px solid #bbb;
+  -webkit-box-shadow: 0px 3px 5px #888888;
+  box-shadow: 0px 3px 5px #888888;
+}
+#content #mapcover-mapbox .demoContextPanel div {
+  margin-top: 5px;
 }

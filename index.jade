@@ -10,6 +10,11 @@ html(lang='en')
     // import google map
     script(type='text/javascript', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDEgp09_feK-aKfo_2h3tOcWfzbrByZwDw&libraries=geometry')
 
+
+    // import mapbox(leaflet)
+    script(src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js')
+    link(href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css', rel='stylesheet')
+
   body
     //this is just a bootstrap nav,
     nav.navbar.navbar-inverse.navbar-fixed-top
@@ -44,16 +49,16 @@ html(lang='en')
           br 
       .row
         .col-md-9
-          div#mapcover
-            #mapcover-map
+          div.mapcover#mapcover
+            .mapcover-map#mapcover-map
             
-            div#demoControlPanel.mc-static2mapcontainer.panel
+            div.demoControlPanel.mc-static2mapcontainer.panel
               |I am map UI control button's container, I think one can use jQuery UI to make me look better
               br
               br
               div.text-center#zoom-in-control zoomIn
               div.text-center#zoom-out-control zoomOut
-            div#demoContextPanel.mc-ascontextmenu.panel 
+            div.demoContextPanel.mc-ascontextmenu.panel 
               | I am map context menu container, you can sytle me and add logic to me, just as normal DOM nodes.
               | since I am not in Map Container at all! 
               .text-center
@@ -63,9 +68,49 @@ html(lang='en')
               .form-group
                 label(for='content-marker1') Content of next Marker1
                 input#content-marker1.form-control(type='text', placeholder='New of Marker1!')
-
-            
         .col-md-3#log
+
+
+      .row
+        .col-md-12
+          br
+          br
+          br
+          h4 Demo of mapcover for mapbox
+
+      .row
+        .col-md-9
+          .mapcover#mapcover-mapbox
+            .mapcover-map#mapcover-map-mapbox
+
+            div.demoControlPanel.mc-static2mapcontainer.panel
+              |I am map UI control button's container, I think one can use jQuery UI to make me look better
+              br
+              br
+              div.text-center#zoom-in-control-mapbox zoomIn
+              div.text-center#zoom-out-control-mapbox zoomOut
+            div.demoContextPanel.mc-ascontextmenu.panel 
+              | I am map context menu container, you can sytle me and add logic to me, just as normal DOM nodes.
+              | since I am not in Map Container at all! 
+              .text-center
+                .btn-group(role='group', aria-label='...')
+                  button.btn.btn-default#place-marker1-mapbox(type='button') Marker1
+                  button.btn.btn-default#place-marker2-mapbox(type='button') Marker2
+              .form-group
+                label(for='content-marker1') Content of next Marker1
+                input#content-marker1-mapbox.form-control(type='text', placeholder='New of Marker1!')
+
+
+        .col-md-3
+
+      footer
+        br
+        br
+        | this is footer
+
+
+
+
 
 
 
@@ -73,7 +118,7 @@ html(lang='en')
 
 
 
-
+    // containers 
     script#customMarkerTemplate(type="text/template")
       div.mc-static2mapcanvas.customized-marker
         div.content <%= displayedText %>
@@ -90,8 +135,6 @@ html(lang='en')
     //
       Bootstrap core JavaScript
       ==================================================
-    
-    // Placed at the end of the document so the pages load faster
     script(src='./assets/js/jquery.min.js')
     script(src='./assets/js/bootstrap.min.js')
 

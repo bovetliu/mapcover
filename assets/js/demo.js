@@ -2,12 +2,10 @@ $(document).ready(function(){
  
   _.defer(function saferun () {
     /*adjust mapcover height, irrelevant of main demo purpose*/
-    $('#mapcover').height( $('#content').height() );
+    $('.mapcover').height( $(window).height() * 0.8);
 
     /*initMapCover takes into two ids, first one for mapcover container, the second one for the map embedded in mapcover*/
     var mapcover = initMapCover( 'mapcover', 'mapcover-map' );
-
-
     /*create two Classes for two kinds of CustomMarker, using two different templates specified in index.html
       You are free to pass any compiled template function as argument of initCustomMarker. As long as 
       the compiled template function you selected has following usage
@@ -94,7 +92,7 @@ $(document).ready(function(){
     var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
 
     temp_marker_controller.set( "mouseout", function (container_node){  
-        console.log("this handler is set by setting controller");
+        console.log("remving css class customized-marker-hover");
         var dom = container_node.childNodes[0];
         dom.classList.remove("customized-marker-hover");
     });
@@ -148,5 +146,15 @@ $(document).ready(function(){
       mapcover.addCustomMarker("CustomMarker2"  , custom_marker_option3);
 
     } ,15000);
+
+
+
+
+    var mapcover_mapbox = initMapCover( 'mapcover-mapbox', 'mapcover-map-mapbox',{
+      map_vender:"mapbox",
+      latLng:[-34.397,150.644],
+      initial_zoom:8
+    } );
+
   }); // end of _.defer(function, ..);
 });

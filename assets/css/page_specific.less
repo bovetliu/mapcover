@@ -4,14 +4,19 @@ html,body{
   width: 100%;
   height: 100%;
 }
+.percent90height{
+  height: 90%;
+
+}
+
 
 #content{
   margin-top:45px;
-  height: 80%;
+  // height: 80%;
   position: relative;
   #mapcover{
     height: 600px;
-    #demoControlPanel{
+    .demoControlPanel{
       left: 20px;
       top:200px;
  
@@ -30,7 +35,7 @@ html,body{
       } 
     }
     // here specifying, when contextmenu is shown how it would be like
-    #demoContextPanel{
+    .demoContextPanel{
       
       width:210px;
       padding: 10px 10px;
@@ -96,5 +101,45 @@ html,body{
         }
       }
     }
+  }  // #mapcover ends here
+  #mapcover-mapbox{
+    #mapcover-map-mapbox{
+      background-color: #bbb;
+    }
+
+    .demoControlPanel{
+      left: 20px;
+      top:200px;
+ 
+      width: 200px;
+      background-color: #fff;
+      border:1px solid #bbb;
+      padding: 0px 10px;
+      .box-shadow(0px 3px 8px #888888);
+      #zoom-in-control-mapbox,
+      #zoom-out-control-mapbox{
+        cursor: pointer;
+        &:hover{
+          color:#FF0000;
+        }
+
+      } 
+    }
+    // here specifying, when contextmenu is shown how it would be like
+    .demoContextPanel{
+      
+      width:210px;
+      padding: 10px 10px;
+      border:1px solid #bbb;
+      .box-shadow(0px 3px 5px #888888);
+      div{
+        margin-top: 5px;
+      }
+    }
+
   }
+
+
+
+
 }

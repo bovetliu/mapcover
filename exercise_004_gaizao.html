@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>A simple map</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+<!-- http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js -->
+<!-- assets/plugins/leaflet/leaflet-src.js -->
+<!-- <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet-src.js"></script>
+<link rel="stylesheet" href="assets/plugins/leaflet/leaflet.css" /> -->
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+  .my-custom-layer {
+
+  }
+  .my-custom-layer .text-to-be-displayed{
+    padding: 4px 8px;
+    background-color: #2B82CB;
+    font-size: 14px;
+    color: #fff;
+    width:150px;
+    box-shadow: 2px 2px 6px #555;
+  }
+  .my-custom-layer .marker-foot{
+
+    color:#2B82CB;
+    text-shadow: 2px 2px 6px #555;
+
+    margin-top: -6px;
+  }
+
+
+</style>
+</head>
+<body>
+<div id='map'></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="assets/js/bootstrap.min.js"></script>
+
+<script>
+  /*
+   * 0.7.2 L.ImageOverlay2 is used to overlay images over the map (to specific geographical bounds).
+   */
+
+  L.ImageOverlay2 = L.Class.extend({
+    includes: L.Mixin.Events,
+
+    initialize: function (latLng, anchor, options) { 
+
+      this._latLng = latLng;
+      this._anchor = anchor
+      L.setOptions(this, options);
+    },
+
+    // this function will be called internally, and be called only once
+    onAdd: function (map) {
+      this._map = map;
+
+      if (!this._container) {
+        this._initContainer();
+      }
+
+      map._panes.overlayPane.appendChild(this._container);
+      map.on('viewreset', this._reset, this);
+
+      if (map.options.zoomAnimation && L.Browser.any3d) {
+        map.on('zoomanim', this._animateZoom, this);
+      }
+
+      this._reset();  // have to call this manually for one time, to set the element at right position
+    },
+
+    // _initContainer will be called in onAdd()
+    _initContainer: function () {  
+      this._container = L.DomUtil.create('div', 'my-custom-layer text-center');
+      this._container.innerHTML = 
+      '<div class="text-to-be-displayed" >女神:"那我去洗澡了"</br>我:"恩恩好的,不打扰了"</div>\
+      <div class="marker-foot">\
+        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>\
+      </div>';
+
+      if (this._map.options.zoomAnimation && L.Browser.any3d) {   // if current browser support
+        L.DomUtil.addClass(this._container, 'leaflet-zoom-animated');
+      } else {
+        L.DomUtil.addClass(this._container, 'leaflet-zoom-hide');
+      }
+
+    },
+
+    relocateAnchor:function(point, container){
+      console.log(this._container.clientHeight);
+      var offset_height = Math.round(this._container.clientHeight * this._anchor.y/ 100 -8 );
+      var offset_width = Math.round(this._container.clientWidth * this._anchor.x/100);
+      point.x = point.x - offset_width;
+      point.y = point.y - offset_height;
+      console.log(point);
+      return point;
+    },
+    _animateZoom: function (e) {
+      // console.log(e);
+      // e.zoom is target zoom, when this function is called, zoom action has not finished
+      var map = this._map,
+          topLeft = map._latLngToNewLayerPoint(this._latLng, e.zoom, e.center);
+
+      L.DomUtil.setPosition(this._container, this.relocateAnchor(topLeft, this._container));
+    },
+
+    //main behavior of this _reset() is to change size
+    // the purpose of _reset is redraw this element when view changed
+    _reset: function () {
+      var container   = this._container,
+          topLeft = this._map.latLngToLayerPoint(this._latLng);
+      L.DomUtil.setPosition(container, this.relocateAnchor(topLeft, this._container));
+    },
+
+
+    onRemove: function (map) {
+      map.getPanes().overlayPane.removeChild(this._container);
+
+      map.off('viewreset', this._reset, this);
+
+      if (map.options.zoomAnimation) {
+        map.off('zoomanim', this._animateZoom, this);
+      }
+    },
+
+    addTo: function (map) {
+      map.addLayer(this);
+      return this;
+    },
+
+    // TODO remove bringToFront/bringToBack duplication from TileLayer/Path
+    bringToFront: function () {
+      if (this._container) {
+        this._map._panes.overlayPane.appendChild(this._container);
+      }
+      return this;
+    },
+
+    bringToBack: function () {
+      var pane = this._map._panes.overlayPane;
+      if (this._container) {
+        pane.insertBefore(this._container, pane.firstChild);
+      }
+      return this;
+    },
+
+    getAttribution: function () {
+      return this.options.attribution;
+    },
+  });
+
+  L.imageOverlay2 = function (latLng, anchor, options) {
+    return new L.ImageOverlay2(latLng, anchor, options);
+  };
+
+  L.mapbox.accessToken = 'pk.eyJ1IjoiYm93ZWlsaXUyMDE0IiwiYSI6IjYyOGJkN2YwOTZmZDk3ZmFlYWU3ZTZkMTM3N2MzNTI2In0.MISpq-9bA6S3R1DHeGbGow';
+  var map = L.mapbox.map('map', 'mapbox.streets').setView([30.62270,  -96.315949], 14);
+
+  L.marker([30.627646, -96.325667]).addTo(map);
+
+  L.imageOverlay2(L.latLng(30.627646, -96.336867), {x:50, y:100}).addTo(map);
+
+
+
+
+
+</script>
+
+</body>
+</html>

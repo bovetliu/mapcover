@@ -250,7 +250,7 @@ $(document).ready(function(){
     },15000);
 
     setTimeout(function(){
-      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>2. change marker content");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>8. change marker content");
       temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaaaaaaaaaaaaaaaaaa"});
     },18000);
   }); // end of _.defer(function, ..);

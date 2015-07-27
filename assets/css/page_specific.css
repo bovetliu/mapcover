@@ -91,7 +91,7 @@ body {
 }
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker {
   background-color: rgba(0, 255, 255, 0);
-  width: 110px;
+  min-width: 100px;
 }
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .content {
   background-color: #FF5A5F;
@@ -102,7 +102,7 @@ body {
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .remove-background {
   padding: 0px;
   margin: 0px;
-  margin-top: -4px;
+  margin-top: -6px;
   color: #FF5A5F;
   background-color: rgba(255, 255, 255, 0);
 }

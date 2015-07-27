@@ -265,13 +265,12 @@ $(document).ready(function readyCB(){
           CustomMarker.prototype = new google.maps.OverlayView();   // OverlayView extends MVCObject
 
           CustomMarker.prototype.compiledTemplateFunction = compiledTemplateFunction;
+          // this method is called when setMap(validMap)
           CustomMarker.prototype.onAdd = function(){
             var panes = this.getPanes();
             //console.log(this.dom_);
             if (this.dom_ == null){
               console.log("remaking this.dom_");
-
-
               this.dom_ =$( this.compiledTemplateFunction(datacontent) )[0];
             }
             panes.overlayMouseTarget.appendChild(this.container_);
@@ -288,12 +287,8 @@ $(document).ready(function readyCB(){
             var overlayProjection = this.getProjection();
             // console.log("draw" + this.latLng);
             var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
-            // var JQDOM = $(this.dom_);
 
-            // console.log(this.width_);
-            // console.log(JQDOM .width());
             if (this.dom_) {
-              // console.log(this.dom_)
               this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';
               this.dom_.style.left = Math.round( anchor.x - this.width_ / 2).toString() + 'px';
               $(this.dom_).outerWidth(this.width_); // I need to have this method, 
@@ -349,9 +344,17 @@ $(document).ready(function readyCB(){
               this._latLng = latLng;
               this._anchor = anchor;
               this._map = map;
-              this._container = null;
-              this._dom = null;
+              this._container = document.createElement("div");
+              this._dom =  $(  compiledTemplateFunction(datacontent) )[0];
+              this._container.appendChild(this._dom);
+              if (this._map.options.zoomAnimation && L.Browser.any3d) {   // if current browser support
+                L.DomUtil.addClass(this._container, 'leaflet-zoom-animated');
+              } else {
+                L.DomUtil.addClass(this._container, 'leaflet-zoom-hide');
+              }
               L.setOptions(this, options);
+
+
             },
             refresh:function(){
               console.log("refresh(): " + this._datacontent);
@@ -364,10 +367,12 @@ $(document).ready(function readyCB(){
             onAdd: function (map) {
               this._map = map;
 
-              if (!this._container) {
-                this._initContainer();
+              if (!this._dom) {
+                this._initDom();
               }
-
+              if (this._dom.style.display == "none"){
+                this._dom.style.display = "initial";
+              }
               map._panes.overlayPane.appendChild(this._container);
               map.on('viewreset', this._reset, this);
 
@@ -377,17 +382,10 @@ $(document).ready(function readyCB(){
               this._reset();  // have to call this manually for one time, to set the element at right position
             },
 
-            // _initContainer will be called in onAdd()
-            _initContainer: function () {  
-              this._container = L.DomUtil.create('div', ' ');
+            // _initDom will be called in onAdd()
+            _initDom: function () {  
               this._dom = $(this.compiledTemplateFunction(this._datacontent))[0];
               this._container.appendChild(this._dom);
-
-              if (this._map.options.zoomAnimation && L.Browser.any3d) {   // if current browser support
-                L.DomUtil.addClass(this._container, 'leaflet-zoom-animated');
-              } else {
-                L.DomUtil.addClass(this._container, 'leaflet-zoom-hide');
-              }
             },
 
             compiledTemplateFunction: compiledTemplateFunction,
@@ -414,6 +412,7 @@ $(document).ready(function readyCB(){
             //main behavior of this _reset() is to change size
             // the purpose of _reset is redraw this element when view changed
             _reset: function () {
+              //TODO: should do _latLng preprocessing to make sure latLng object is passed in
               var container   = this._container,
                   topLeft = this._map.latLngToLayerPoint(this._latLng);
               L.DomUtil.setPosition(container, this.relocateAnchor(topLeft, this._dom));
@@ -422,9 +421,17 @@ $(document).ready(function readyCB(){
 
             onRemove: function (map) {
               map.getPanes().overlayPane.removeChild(this._container);
+              this._dom.style.display="none";
+              // map.off('viewreset', this._reset, this);
+              // if (map.options.zoomAnimation) {
+              //   map.off('zoomanim', this._animateZoom, this);
+              // }
+            },
 
+            delete: function (map) {
+              map.getPanes().overlayPane.removeChild(this._container);
+              this._dom = null;
               map.off('viewreset', this._reset, this);
-
               if (map.options.zoomAnimation) {
                 map.off('zoomanim', this._animateZoom, this);
               }
@@ -547,7 +554,6 @@ $(document).ready(function readyCB(){
                     console.log("cancel one event handler of " + keyname);
                     L.DomEvent.removeListener( ClassRef.get('custom_marker').getContainer() , keyname);
                   }
-
                   else {
                     console.log("content of " + keyname + " is not event");
                   }
@@ -575,7 +581,8 @@ $(document).ready(function readyCB(){
                   ClassRef.get("custom_marker").addTo( ClassRef.get("map") );
                 }
                 else {
-                  ClassRef.get("map").removeLayer( ClassRef.get("custom_marker") );
+                  // map is at map_view_unit, so use ClassRefOuter
+                  ClassRefOuter.model.get("map").removeLayer( ClassRef.get("custom_marker") );
                 }
                 // ClassRef.get("custom_marker").draw();
               });

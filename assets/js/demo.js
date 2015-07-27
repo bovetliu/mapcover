@@ -62,6 +62,8 @@ $(document).ready(function(){
       }
     });
 
+
+
     /*assign logic to context menu*/
     $("#place-marker1").click(function placeMarker1(){
       console.log("placing marker1");
@@ -103,61 +105,82 @@ $(document).ready(function(){
 
     $('#log').html("1. two custom_markers generated")
 
-    // setTimeout(function timeout(){
-    //   temp_marker_controller.set("latLng",new google.maps.LatLng(-33.397, 150.644) );
-    //   $('#log').html( $('#log').html()+ "<br/>2. moved one custom marker")
-    // },3000);
+    setTimeout(function timeout(){
+      temp_marker_controller.set("latLng",new google.maps.LatLng(-33.397, 150.644) );
+      $('#log').html( $('#log').html()+ "<br/>2. moved one custom marker")
+    },3000);
 
-    // setTimeout(function timeout(){
-    //   temp_marker1_controller.set("datacontent",  {"displayedText":"changed me !"});
+    setTimeout(function timeout(){
+      temp_marker1_controller.set("datacontent",  {"displayedText":"changed me !"});
 
-    //   $('#log').html( $('#log').html()+ "<br/>also change content of another marker")
+      $('#log').html( $('#log').html()+ "<br/>also change content of another marker")
 
-    // },3010);
-
-
-
-    // setTimeout(function timeout(){
-    //   console.log("vanish it");
-    //   temp_marker_controller.set({ map:null });
-    //   $('#log').html( $('#log').html()+ "<br/>3. make it invisible, and removed from DOM tree")
-    // } ,6000);
-
-    // setTimeout(function timeout(){
-    //   console.log("appear it");
-    //   temp_marker_controller.set({ map:mapcover.model.get("map")});
-    //   $('#log').html( $('#log').html()+ "<br/>4. make it appear again")
-    // } ,9000);
-
-    // setTimeout(function timeout(){
-    //   temp_marker_controller.set({
-    //     mouseover:null,
-    //     mouseout:null
-    //   });
-    //   $('#log').html( $('#log').html()+ "<br/>5. disable its mouseout, mouseover event handlers")
-
-    // } ,12000);
-    // setTimeout(function timeout(){
-    //   temp_marker_controller.delete();
-    //   temp_marker_controller = null;
-    //   console.log(temp_marker_controller);
-    //   $('#log').html( $('#log').html()+ "<br/>6. delete it,removed its references, hoping trash collector will handle it, <br/> create one new instance of class CustomMarker2, ")
-
-    //   mapcover.addCustomMarker("CustomMarker2"  , custom_marker_option3);
-
-    // } ,15000);
+    },3010);
 
 
 
-    // mapcover container id,  map container id,  mapoptions
+    setTimeout(function timeout(){
+      console.log("vanish it");
+      temp_marker_controller.set({ map:null });
+      $('#log').html( $('#log').html()+ "<br/>3. make it invisible, and removed from DOM tree")
+    } ,6000);
+
+    setTimeout(function timeout(){
+      console.log("appear it");
+      temp_marker_controller.set({ map:mapcover.model.get("map")});
+      $('#log').html( $('#log').html()+ "<br/>4. make it appear again")
+    } ,9000);
+
+    setTimeout(function timeout(){
+      temp_marker_controller.set({
+        mouseover:null,
+        mouseout:null
+      });
+      $('#log').html( $('#log').html()+ "<br/>5. disable its mouseout, mouseover event handlers")
+
+    } ,12000);
+    setTimeout(function timeout(){
+      temp_marker_controller.delete();
+      temp_marker_controller = null;
+      console.log(temp_marker_controller);
+      $('#log').html( $('#log').html()+ "<br/>6. delete it,removed its references, hoping trash collector will handle it, <br/> create one new instance of class CustomMarker2, ")
+
+      mapcover.addCustomMarker("CustomMarker2"  , custom_marker_option3);
+
+    } ,15000);
+
+
+
+
+
+
+
+
+                                        //mapcover container id,  map container id,  mapoptions
     var mapcover_mapbox = initMapCover( 'mapcover-mapbox', 'mapcover-map-mapbox',{
       map_vender:"mapbox",
       latLng:[-34.397,150.644],
       initial_zoom:8
     });
-    
-    mapcover_mapbox.initCustomMarker( "CustomMarker1_mapcover" , _.template( $('#customMarkerTemplate').html()  ));
 
+    $("#zoom-in-control-mapbox").click(function zoomInControlClicked(){
+      var zoom = mapcover.model.get("map").getZoom();
+      if (zoom < 18){
+        mapcover_mapbox.model.get("map").zoomIn();
+      }
+    });
+    $("#zoom-out-control-mapbox").click(function zoomOutControlClicked(){
+      var zoom = mapcover.model.get("map").getZoom();
+      if (zoom > 0){
+        mapcover_mapbox.model.get("map").zoomOut();
+      }
+    });
+
+    $('#place-marker1-mapbox, #place-marker2-mapbox').click(function(){
+      alert("logic haven't been applied yet");
+    });
+    mapcover_mapbox.initCustomMarker( "CustomMarker1_mapcover" , _.template( $('#customMarkerTemplate').html()  ));
+    $('#log-mapbox').html("1. created on HTML/CSS specified marker");
     var custom_marker_option_mapcover = {
       anchor: {x:50, y :100},
       datacontent:{"displayedText":"This Marker1"},
@@ -165,15 +188,11 @@ $(document).ready(function(){
       map: mapcover_mapbox.model.get("map"),
       mouseover:function(container_node){
         console.log("marker heard mouseover");
-        // console.log(event.latLng);
-        // console.log(container_node);
         var dom = container_node.childNodes[0];
         dom.classList.add("customized-marker-hover");
       },
       mouseout:function(container_node){
         console.log("marker heard mouseout");
-        // console.log(event.latLng);
-        // console.log(container_node);
         var dom = container_node.childNodes[0];
         dom.classList.remove("customized-marker-hover");
       },
@@ -185,6 +204,54 @@ $(document).ready(function(){
     var temp_marker_controller_mapcover = mapcover_mapbox.addCustomMarker("CustomMarker1_mapcover"  ,custom_marker_option_mapcover);
 
 
+    setTimeout(function(){
+      console.log("setting map null");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>2. remove marker from map");
+      temp_marker_controller_mapcover.set("map",null);
+    },3000);
 
+    setTimeout(function(){
+      console.log("setting map null");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>3. add back the marker");
+      temp_marker_controller_mapcover.set("map", mapcover_mapbox.model.get("map"));
+    },6000);
+
+
+    setTimeout(function(){
+      console.log("remove listener");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>4. remove mouseover and mouseout listeners");
+      temp_marker_controller_mapcover.set({
+        mouseover:null,
+        mouseout:null
+
+      });
+    },9000);
+
+    setTimeout(function(){
+      console.log("add back listener");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>5. add back listeners");
+      temp_marker_controller_mapcover.set({
+        mouseover:function(container_node){
+          console.log("marker heard mouseover");
+          var dom = container_node.childNodes[0];
+          dom.classList.add("customized-marker-hover");
+        },
+        mouseout:function(container_node){
+          console.log("marker heard mouseout");
+          var dom = container_node.childNodes[0];
+          dom.classList.remove("customized-marker-hover");
+        }
+      })
+    },12000);
+
+    setTimeout(function(){
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>6. move marker position");
+      temp_marker_controller_mapcover.set("latLng", L.latLng(-33.397, 150.644) );
+    },15000);
+
+    setTimeout(function(){
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>2. change marker content");
+      temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaaaaaaaaaaaaaaaaaa"});
+    },18000);
   }); // end of _.defer(function, ..);
 });

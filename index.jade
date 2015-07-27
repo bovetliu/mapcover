@@ -38,6 +38,9 @@ html(lang='en')
 
     .container-fluid#content
       .row
+        .col-md-12
+          h2 One set of HTML/CSS and JavaScript codes, fullfill different map venders.
+      .row
         .col-md-9
           span( class="glyphicon glyphicon-star" aria-hidden="true") 
           | &nbsp;&nbsp; At left side of map, there is one mapcover ".mc-static2mapcontainer" UI, click zoomIn and zoomOut to zoom.
@@ -99,9 +102,7 @@ html(lang='en')
               .form-group
                 label(for='content-marker1') Content of next Marker1
                 input#content-marker1-mapbox.form-control(type='text', placeholder='New of Marker1!')
-
-
-        .col-md-3
+        .col-md-3#log-mapbox
 
       footer
         br

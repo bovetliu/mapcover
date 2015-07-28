@@ -92,6 +92,8 @@ body {
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker {
   background-color: rgba(0, 255, 255, 0);
   min-width: 100px;
+  max-width: 200px;
+  height: auto;
 }
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .content {
   background-color: #FF5A5F;

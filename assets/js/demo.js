@@ -76,7 +76,13 @@ $(document).ready(function(){
         map: mapcover.model.get("map"),
         click:function(container_node){
           alert("I am created By you via ContextMenu");
-        }
+        },
+        mouseover:function(container_node){
+          container_node.childNodes[0].classList.add("customized-marker-hover");
+        },
+        mouseout:function(container_node){
+          container_node.childNodes[0].classList.remove("customized-marker-hover");
+        },
       };
       mapcover.addCustomMarker("CustomMarker1"  ,temp_marker_option);
       mapcover.hideContextMenu();
@@ -150,11 +156,10 @@ $(document).ready(function(){
     } ,15000);
 
 
+    /*
+      ====================Following code is for Mapcover on Mapbox=========================== 
 
-
-
-
-
+    */
 
                                         //mapcover container id,  map container id,  mapoptions
     var mapcover_mapbox = initMapCover( 'mapcover-mapbox', 'mapcover-map-mapbox',{
@@ -162,6 +167,7 @@ $(document).ready(function(){
       latLng:[-34.397,150.644],
       initial_zoom:8
     });
+
 
     $("#zoom-in-control-mapbox").click(function zoomInControlClicked(){
       var zoom = mapcover.model.get("map").getZoom();
@@ -176,11 +182,37 @@ $(document).ready(function(){
       }
     });
 
-    $('#place-marker1-mapbox, #place-marker2-mapbox').click(function(){
-      alert("logic haven't been applied yet");
+
+
+    $('#place-marker1-mapbox').click(function mbMarker1Place () {
+      console.log("placing marker1");
+      /*when this function is invoked, go to mapcover.mode.get("mc_map_events")['rightclick']*/
+      console.log(mapcover_mapbox.model.get("mc_map_events")['rightclick'].latlng);   // ATTENTION!! the difference between Google MouseEvent.latLng and Mapbox.latlng
+      var temp_marker_option = {
+        anchor: {x:50, y :100},
+        datacontent:{"displayedText": ($('#content-marker1-mapbox').val()=="")?"New of Marker1!": $('#content-marker1-mapbox').val()},
+        latLng: mapcover_mapbox.model.get("mc_map_events")['rightclick'].latlng,
+        map: mapcover_mapbox.model.get("map"),
+        click:function(container_node){
+          alert("I am created By you via ContextMenu");
+        },
+        mouseover:function(container_node){
+          container_node.childNodes[0].classList.add("customized-marker-hover");
+        },
+        mouseout:function(container_node){
+          container_node.childNodes[0].classList.remove("customized-marker-hover");
+        },
+      };
+      mapcover_mapbox.addCustomMarker("CustomMarker1_mapcover"  ,temp_marker_option);
+      mapcover_mapbox.hideContextMenu();
+
     });
     mapcover_mapbox.initCustomMarker( "CustomMarker1_mapcover" , _.template( $('#customMarkerTemplate').html()  ));
     $('#log-mapbox').html("1. created on HTML/CSS specified marker");
+    
+
+
+
     var custom_marker_option_mapcover = {
       anchor: {x:50, y :100},
       datacontent:{"displayedText":"This Marker1"},
@@ -250,7 +282,7 @@ $(document).ready(function(){
     },15000);
 
     setTimeout(function(){
-      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>8. change marker content");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>7. change marker content");
       temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaaaaaaaaaaaaaaaaaa"});
     },18000);
   }); // end of _.defer(function, ..);

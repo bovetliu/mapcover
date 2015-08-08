@@ -5,7 +5,7 @@ $(document).ready(function(){
     $('.mapcover').height( $(window).height() * 0.8);
 
     /*initMapCover takes into two ids, first one for mapcover container, the second one for the map embedded in mapcover*/
-    var mapcover = initMapCover( 'mapcover', 'mapcover-map' );
+    var mapcover = initMapCover( 'mapcover', 'mapcover-map', null );
     /*create two Classes for two kinds of CustomMarker, using two different templates specified in index.html
       You are free to pass any compiled template function as argument of initCustomMarker. As long as 
       the compiled template function you selected has following usage

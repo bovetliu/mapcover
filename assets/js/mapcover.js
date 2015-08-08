@@ -97,8 +97,6 @@ $(document).ready(function readyCB(){
       },
       initialize:function(){
         /*event management*/
-
-
       }
     })) ();
 

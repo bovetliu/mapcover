@@ -218,17 +218,20 @@ $(document).ready(function(){
       datacontent:{"displayedText":"This Marker1"},
       latLng: L.latLng(-34.397, 150.644),
       map: mapcover_mapbox.model.get("map"),
-      mouseover:function(container_node){
+      mouseover:function(){
+        var container_node =this;
         console.log("marker heard mouseover");
         var dom = container_node.childNodes[0];
         dom.classList.add("customized-marker-hover");
       },
-      mouseout:function(container_node){
+      mouseout:function(){
+        var container_node =this;
         console.log("marker heard mouseout");
         var dom = container_node.childNodes[0];
         dom.classList.remove("customized-marker-hover");
       },
-      click:function(container_node){
+      click:function(){
+        var container_node =this;
         console.log("you clicked me");
       }
     };
@@ -255,7 +258,6 @@ $(document).ready(function(){
       temp_marker_controller_mapcover.set({
         mouseover:null,
         mouseout:null
-
       });
     },9000);
 
@@ -263,12 +265,14 @@ $(document).ready(function(){
       console.log("add back listener");
       $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>5. add back listeners");
       temp_marker_controller_mapcover.set({
-        mouseover:function(container_node){
+        mouseover:function(){
+          var container_node = this;
           console.log("marker heard mouseover");
           var dom = container_node.childNodes[0];
           dom.classList.add("customized-marker-hover");
         },
-        mouseout:function(container_node){
+        mouseout:function(){
+          var container_node = this;
           console.log("marker heard mouseout");
           var dom = container_node.childNodes[0];
           dom.classList.remove("customized-marker-hover");

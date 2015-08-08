@@ -1,7 +1,7 @@
 $(document).ready(function readyCB(){
   
   // this mapcover.js occupy position at window
-  initMapCover = function ( id_of_map_cover_div, id_of_map_container, mapcover_options ) {    
+  initMapCover = function ( id_of_map_cover_div, id_of_map_container, map_options ) {    
     var utility = (function createUtility(){
     
       function Utility(){
@@ -98,6 +98,7 @@ $(document).ready(function readyCB(){
       initialize:function(){
         /*event management*/
 
+
       }
     })) ();
 
@@ -159,7 +160,7 @@ $(document).ready(function readyCB(){
         } // end of "if (ClassRef.model.get("map_vender") == "google")"
         else if (ClassRef.model.get("map_vender") == "mapbox") {
           L.mapbox.accessToken = 'pk.eyJ1IjoiYm93ZWlsaXUyMDE0IiwiYSI6IjYyOGJkN2YwOTZmZDk3ZmFlYWU3ZTZkMTM3N2MzNTI2In0.MISpq-9bA6S3R1DHeGbGow';
-          var map = L.mapbox.map(id_of_map_container, 'mapbox.streets').setView(mapcover_options.latLng, mapcover_options.initial_zoom);
+          var map = L.mapbox.map(id_of_map_container, 'mapbox.streets').setView(map_options.latLng, map_options.initial_zoom);
           ClassRef.model.set("map", map)
           map.on("click", function mapboxClickHandler (event) {
             ClassRef.mapLeftClickHandler(event);
@@ -544,15 +545,13 @@ $(document).ready(function readyCB(){
                 ClassRef.on("change:"+keyname, function changeHandler () {
                   if ( typeof ClassRef.get(keyname) == 'function') {
                     console.log(keyname + "changed");
-                    L.DomEvent.addListener( ClassRef.get('custom_marker').getContainer(), keyname, function listenerInvokesMe( ){
-                      
-                      var tempfunc = ClassRef.get(keyname);
-                      tempfunc( ClassRef.get('custom_marker').getContainer());
-                    });           
+                    ClassRef.set(keyname+'_realhandler', ClassRef.get(keyname));
+                    L.DomEvent.addListener( ClassRef.get('custom_marker').getContainer(), keyname, ClassRef.get(keyname+'_realhandler'));           
                   }
                   else if (ClassRef.get(keyname) == null){
                     console.log("cancel one event handler of " + keyname);
-                    L.DomEvent.removeListener( ClassRef.get('custom_marker').getContainer() , keyname);
+                    L.DomEvent.removeListener( ClassRef.get('custom_marker').getContainer() , keyname, ClassRef.get(keyname+'_realhandler'));
+                    ClassRef.set(keyname+'_realhandler', null);
                   }
                   else {
                     console.log("content of " + keyname + " is not event");
@@ -662,8 +661,8 @@ $(document).ready(function readyCB(){
         console.log("map_view_unit init()");
         var ClassRef = this;
 
-        if (mapcover_options){
-          this.model.set(mapcover_options);
+        if (map_options){
+          this.model.set(map_options);
         }
 
         ClassRef.mapInitialize(); 

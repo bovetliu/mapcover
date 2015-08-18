@@ -260,7 +260,7 @@ $(document).ready(function readyCB(){
         if (ClassRef.model.get("map_vender") == "google") {
           CustomMarker = function (anchor,datacontent, latLng, map){
 
-            this.anchor = anchor; //anchor is one point {x: int, y:int}
+            this._anchor = anchor; //anchor is one point {x: int, y:int}
             this.container_ = document.createElement("div");
 
             this.dom_ =  $(  compiledTemplateFunction(datacontent) )[0];
@@ -301,14 +301,12 @@ $(document).ready(function readyCB(){
               var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
 
               if (this.dom_) {
-                this.dom_.style.top = (Math.round(anchor.y- this.dom_.offsetHeight)).toString()+'px';
-                this.dom_.style.left = Math.round( anchor.x - this.dom_.offsetWidth / 2).toString() + 'px';
-                // $(this.dom_).outerWidth(this.width_); // I need to have this method, 
-                // $(this.dom_).outerHeight(this.height_);
-                // if (this.datacontent["displayedText"]== "New of Marker1"){
-                //   console.log($(this.dom_).height());
-                //   console.log(this.height_);
-                // }
+                var bias_height = this._anchor.y / 100 * this.dom_.offsetHeight;
+                var bias_width = this._anchor.x / 100 * this.dom_.offsetWidth;
+
+                this.dom_.style.top = Math.round(anchor.y- bias_height).toString()+'px';
+                this.dom_.style.left = Math.round( anchor.x - bias_width).toString() + 'px';
+
               }
             }
           };
@@ -409,10 +407,10 @@ $(document).ready(function readyCB(){
             // TODO: following function needs to tuned outside
             relocateAnchor:function(point, dom){
               if (this._anchor) {
-                var offset_height = Math.round(dom.clientHeight * this._anchor.y/ 100 );
-                var offset_width = Math.round(dom.clientWidth * this._anchor.x/100);
-                point.x = point.x - offset_width;
-                point.y = point.y - offset_height;
+                var bias_height = Math.round(dom.clientHeight * this._anchor.y/ 100 );
+                var bias_width = Math.round(dom.clientWidth * this._anchor.x/100);
+                point.x = point.x - bias_width;
+                point.y = point.y - bias_height;
               } 
               return point;
             },

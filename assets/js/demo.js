@@ -15,7 +15,7 @@ $(document).ready(function(){
     mapcover.initCustomMarker( "CustomMarker2", _.template($('#AnotherClassTemplate').html() ) );
 
     var custom_marker_option = {
-      anchor: null,
+      anchor:  {x:50, y :100},
       datacontent:{"displayedText":"This Marker1"},
       latLng: new google.maps.LatLng(-34.397, 150.644),
       map: mapcover.model.get("map"),
@@ -77,7 +77,7 @@ $(document).ready(function(){
       /*when this function is invoked, go to mapcover.mode.get("mc_map_events")['rightclick']*/
       console.log(mapcover.model.get("mc_map_events")['rightclick'].latLng);
       var temp_marker_option = {
-        anchor: null,
+        anchor: {x:50, y :100},
         datacontent:{"displayedText": ($('#content-marker1').val()=="")?"New of Marker1": $('#content-marker1').val()},
         latLng: mapcover.model.get("mc_map_events")['rightclick'].latLng,
         map: mapcover.model.get("map"),

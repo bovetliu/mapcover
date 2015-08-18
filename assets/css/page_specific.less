@@ -50,21 +50,30 @@ html,body{
 
       .gm-style{
         div div{
-          .customized-marker{
+        .customized-marker{
             background-color: rgba(0, 255, 255, 0);
             .content{
+              cursor: pointer;
               background-color: #FF5A5F; 
               color: #fff;
               padding:0px 5px;
               font-size: 14px;
+              min-width: 100px;
             }
             .remove-background{
-
               padding: 0px;
               margin: 0px;
-              margin-top: -4px;
+              margin-top: -3px;
+              height: 11px;
               color:#FF5A5F;
               background-color: rgba(255, 255, 255, 0);
+              svg{
+                font-size: 8px;
+                line-height: 8px;
+                polygon{
+                  fill: #FF5A5F;
+                }
+              }
             }
           }
           .customized-marker.customized-marker-hover{
@@ -73,9 +82,14 @@ html,body{
             }
             .remove-background{
               color:#252525;
-            }
-          }
-          
+              svg{
+                polygon{
+                  fill: #252525;
+                }
+              }
+            }//- .remove-background
+          }//-.customized-marker.customized-marker-hover
+         
           .customized-marker2{
             font-size: 14px;
 
@@ -104,38 +118,51 @@ html,body{
   }  // #mapcover ends here
   #mapcover-mapbox{
     #mapcover-map-mapbox{
+      
       background-color: #bbb;
-        .customized-marker{   // the DOM outmost div, the parent of this is marker container
-          background-color: rgba(0, 255, 255, 0);
+      .customized-marker{
+        background-color: rgba(0, 255, 255, 0);
+        .content{
+          position: relative;
+          cursor: pointer;
+          background-color: #FF5A5F; 
+          color: #fff;
+          padding:0px 5px;
+          font-size: 14px;
           min-width: 100px;
-          max-width: 200px;
-          height: auto;
-          .content{
-            background-color: #FF5A5F; 
-            color: #fff;
-            padding:0px 5px;
-            font-size: 14px;
-          }
-          .remove-background{
-
-            padding: 0px;
-            margin: 0px;
-            margin-top: -6px;
-            color:#FF5A5F;
-            background-color: rgba(255, 255, 255, 0);
+        }
+        .remove-background{
+          cursor: pointer;
+          position: relative;
+          padding: 0px;
+          margin: auto;
+          width :16px;
+          height:8px;
+          color:#FF5A5F;
+          background-color: rgba(255, 255, 255, 0);
+          svg{
+            font-size: 8px;
+            line-height: 8px;
+            polygon{
+              fill: #FF5A5F;
+            }
           }
         }
-        .customized-marker.customized-marker-hover{
+        &:hover{
           .content{
             background-color: #252525;
           }
           .remove-background{
             color:#252525;
-          }
-        }
+            svg{
+              polygon{
+                fill: #252525;
+              }
+            }
+          }//- .remove-background
 
-
-
+        }// .customized-marker hover
+      }// end .customized-marker
     }
     //demoControlPanel
     .demoControlPanel{

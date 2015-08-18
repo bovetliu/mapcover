@@ -19,21 +19,21 @@ $(document).ready(function(){
       datacontent:{"displayedText":"This Marker1"},
       latLng: new google.maps.LatLng(-34.397, 150.644),
       map: mapcover.model.get("map"),
-      mouseover:function(container_node){
+      // map: null,
+      mouseover:function(custom_marker){
         console.log("marker heard mouseover");
-        // console.log(event.latLng);
-        // console.log(container_node);
+        var container_node = custom_marker.getContainer();
         var dom = container_node.childNodes[0];
         dom.classList.add("customized-marker-hover");
       },
-      mouseout:function(container_node){
+      mouseout:function(custom_marker){
         console.log("marker heard mouseout");
-        // console.log(event.latLng);
-        // console.log(container_node);
+        var container_node = custom_marker.getContainer();
         var dom = container_node.childNodes[0];
         dom.classList.remove("customized-marker-hover");
       },
-      click:function(container_node){
+      click:function(custom_marker){
+        var container_node = custom_marker.getContainer();
         console.log("you clicked me");
       }
     };
@@ -41,8 +41,15 @@ $(document).ready(function(){
 
     var custom_marker_option2 = _.clone(custom_marker_option);
     var custom_marker_option3 = _.clone(custom_marker_option);
-    custom_marker_option2.latLng = new google.maps.LatLng(-33.897, 151.644);
+    custom_marker_option2.latLng = new google.maps.LatLng(-33.879200, 151.215192);
     custom_marker_option2.datacontent = {"displayedText":"Marker2"};
+
+    var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(-33.879200, 151.215232),
+        map: mapcover.model.get("map"),
+        title: 'Hello World!'
+    });
+
     custom_marker_option3.latLng =new google.maps.LatLng(-34.697, 150.644);
     custom_marker_option3.datacontent = {"hotelname": "JingJiang Hotel", "number":2, "price": "五毛钱"};
 
@@ -74,19 +81,20 @@ $(document).ready(function(){
         datacontent:{"displayedText": ($('#content-marker1').val()=="")?"New of Marker1": $('#content-marker1').val()},
         latLng: mapcover.model.get("mc_map_events")['rightclick'].latLng,
         map: mapcover.model.get("map"),
-        click:function(container_node){
+        click:function(custom_marker){
           alert("I am created By you via ContextMenu");
         },
-        mouseover:function(container_node){
+        mouseover:function(custom_marker){
+          var container_node = custom_marker.getContainer();
           container_node.childNodes[0].classList.add("customized-marker-hover");
         },
-        mouseout:function(container_node){
+        mouseout:function(custom_marker){
+          var container_node = custom_marker.getContainer();
           container_node.childNodes[0].classList.remove("customized-marker-hover");
         },
       };
       mapcover.addCustomMarker("CustomMarker1"  ,temp_marker_option);
       mapcover.hideContextMenu();
-
     });
 
     $("#place-marker2").click(function placeMarker1(){
@@ -98,9 +106,13 @@ $(document).ready(function(){
 
 
     var temp_marker_controller = mapcover.addCustomMarker("CustomMarker1"  ,custom_marker_option );
+    
 
-    temp_marker_controller.set( "mouseout", function (container_node){  
+
+
+    temp_marker_controller.set( "mouseout", function (custom_marker){  
         console.log("remving css class customized-marker-hover");
+        var container_node = custom_marker.getContainer();
         var dom = container_node.childNodes[0];
         dom.classList.remove("customized-marker-hover");
     });
@@ -208,7 +220,7 @@ $(document).ready(function(){
 
     });
     mapcover_mapbox.initCustomMarker( "CustomMarker1_mapcover" , _.template( $('#customMarkerTemplate').html()  ));
-    $('#log-mapbox').html("1. created on HTML/CSS specified marker");
+    $('#log-mapbox').html("1. created on HTML/CSS specified marker, click it will log on browser console");
     
 
 
@@ -218,18 +230,18 @@ $(document).ready(function(){
       datacontent:{"displayedText":"This Marker1"},
       latLng: L.latLng(-34.397, 150.644),
       map: mapcover_mapbox.model.get("map"),
-      mouseover:function(){
-        var container_node =this;
-        console.log("marker heard mouseover");
-        var dom = container_node.childNodes[0];
-        dom.classList.add("customized-marker-hover");
-      },
-      mouseout:function(){
-        var container_node =this;
-        console.log("marker heard mouseout");
-        var dom = container_node.childNodes[0];
-        dom.classList.remove("customized-marker-hover");
-      },
+      // mouseover:function(){
+      //   var container_node =this;
+      //   console.log("marker heard mouseover");
+      //   var dom = container_node.childNodes[0];
+      //   dom.classList.add("customized-marker-hover");
+      // },
+      // mouseout:function(){
+      //   var container_node =this;
+      //   console.log("marker heard mouseout");
+      //   var dom = container_node.childNodes[0];
+      //   dom.classList.remove("customized-marker-hover");
+      // },
       click:function(){
         var container_node =this;
         console.log("you clicked me");
@@ -251,43 +263,44 @@ $(document).ready(function(){
       temp_marker_controller_mapcover.set("map", mapcover_mapbox.model.get("map"));
     },6000);
 
-
     setTimeout(function(){
-      console.log("remove listener");
-      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>4. remove mouseover and mouseout listeners");
+      console.log("add back listener");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>4. add listeners, when hovered, check console log");
       temp_marker_controller_mapcover.set({
-        mouseover:null,
-        mouseout:null
-      });
+        mouseover:function(){
+          // handler has custom_marker as context
+          // custom_marker has getContainer(), getDOM()  methods
+          console.log("marker heard mouseover");
+        },
+        mouseout:function(){
+          // handler has custom_marker as context
+          // custom_marker has getContainer(), getDOM()  methods
+          console.log("marker heard mouseout");
+        }
+      })
     },9000);
 
     setTimeout(function(){
-      console.log("add back listener");
-      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>5. add back listeners");
-      temp_marker_controller_mapcover.set({
-        mouseover:function(){
-          var container_node = this;
-          console.log("marker heard mouseover");
-          var dom = container_node.childNodes[0];
-          dom.classList.add("customized-marker-hover");
-        },
-        mouseout:function(){
-          var container_node = this;
-          console.log("marker heard mouseout");
-          var dom = container_node.childNodes[0];
-          dom.classList.remove("customized-marker-hover");
-        }
-      })
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>5. move marker position");
+      temp_marker_controller_mapcover.set("latLng", L.latLng(-33.397, 150.644) );
     },12000);
 
     setTimeout(function(){
-      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>6. move marker position");
-      temp_marker_controller_mapcover.set("latLng", L.latLng(-33.397, 150.644) );
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>6. change marker content");
+      temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaaaaaaaaaaaaaaaaaa"});
     },15000);
 
+
     setTimeout(function(){
-      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>7. change marker content");
-      temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaaaaaaaaaaaaaaaaaa"});
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>7. cancel mouseover mouseout handlers");
+      temp_marker_controller_mapcover.set({mouseover:null, mouseout:null});
     },18000);
+
+    setTimeout(function(){
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>8. add their handlers back");
+      temp_marker_controller_mapcover.set({mouseover:function(){ console.log("added mouseover again")}, mouseout:function(){ console.log("added mouseout again")}});
+    },21000);
+
+
   }); // end of _.defer(function, ..);
 });

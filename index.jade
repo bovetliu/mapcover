@@ -124,7 +124,9 @@ html(lang='en')
       div.mc-static2mapcanvas.customized-marker
         div.content.text-center <%= displayedText %>
         .text-center.remove-background 
-          span.glyphicon.glyphicon-triangle-bottom(aria-hidden='true')
+          svg(height='8', width='16')
+            polygon(points='0,0 8,8 16,0')
+              | Sorry, your browser does not support inline SVG.
 
 
     script#AnotherClassTemplate(type="text/template")

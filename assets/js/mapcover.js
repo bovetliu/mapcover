@@ -97,6 +97,13 @@ $(document).ready(function readyCB(){
       },
       initialize:function(){
         /*event management*/
+        if (map_options){
+          if (map_options.map_vender){
+            this.set("map_vender", map_options.map_vender);
+          }
+          this.set("map_options",map_options);
+        }
+
       }
     })) ();
 
@@ -154,6 +161,11 @@ $(document).ready(function readyCB(){
           // passing google.maps.MouseEvent  from map to MapViewUnit
           google.maps.event.addListener(tempmap, "rightclick", function rightClickHandlerCall (event ) {ClassRef.mapRightClickHandler(event)});
           google.maps.event.addListener(tempmap, 'click', function clickHandlerCall(event) {ClassRef.mapLeftClickHandler(event)});
+
+          google.maps.event.addListener(tempmap, 'dragstart',function googleMapDragstartMapcoverHandler(event){
+            ClassRef.hideContextMenu();
+          });
+
 
         } // end of "if (ClassRef.model.get("map_vender") == "google")"
         else if (ClassRef.model.get("map_vender") == "mapbox") {
@@ -283,17 +295,22 @@ $(document).ready(function readyCB(){
 
           };
           CustomMarker.prototype.draw = function(){   // correspons to _reset of mapbox custom_marker
-            var overlayProjection = this.getProjection();
-            // console.log("draw" + this.latLng);
-            var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
+            if (this.getMap()){    // draw function should be valid only when there is a map for this Class
+              var overlayProjection = this.getProjection();
+              // console.log("draw" + this.latLng);
+              var anchor = overlayProjection.fromLatLngToDivPixel(this.latLng);
 
-            if (this.dom_) {
-              this.dom_.style.top = (Math.round(anchor.y- this.height_)).toString()+'px';
-              this.dom_.style.left = Math.round( anchor.x - this.width_ / 2).toString() + 'px';
-              $(this.dom_).outerWidth(this.width_); // I need to have this method, 
+              if (this.dom_) {
+                this.dom_.style.top = (Math.round(anchor.y- this.dom_.offsetHeight)).toString()+'px';
+                this.dom_.style.left = Math.round( anchor.x - this.dom_.offsetWidth / 2).toString() + 'px';
+                // $(this.dom_).outerWidth(this.width_); // I need to have this method, 
+                // $(this.dom_).outerHeight(this.height_);
+                // if (this.datacontent["displayedText"]== "New of Marker1"){
+                //   console.log($(this.dom_).height());
+                //   console.log(this.height_);
+                // }
+              }
             }
-
-            // generate pixel position
           };
           CustomMarker.prototype.onRemove = function() {  // setMap(null) will run this
             console.log("onRemove is called");
@@ -356,7 +373,7 @@ $(document).ready(function readyCB(){
 
             },
             refresh:function(){
-              console.log("refresh(): " + this._datacontent);
+              // console.log("refresh(): " + this._datacontent);
               this._container.removeChild(this._dom);
               this._dom = $(this.compiledTemplateFunction(this._datacontent))[0];
               this._container.appendChild(this._dom);
@@ -392,7 +409,7 @@ $(document).ready(function readyCB(){
             // TODO: following function needs to tuned outside
             relocateAnchor:function(point, dom){
               if (this._anchor) {
-                var offset_height = Math.round(dom.clientHeight * this._anchor.y/ 100 -8 );
+                var offset_height = Math.round(dom.clientHeight * this._anchor.y/ 100 );
                 var offset_width = Math.round(dom.clientWidth * this._anchor.x/100);
                 point.x = point.x - offset_width;
                 point.y = point.y - offset_height;
@@ -457,7 +474,7 @@ $(document).ready(function readyCB(){
 
         var user_gen_classes = ClassRef.model.get("user_gen_classes");  // get on backbone holder
         user_gen_classes.set(classname, CustomMarker);
-        console.log(classname);
+        // console.log(classname);
       },
       // compiledCustomMarkerTemplateFunction:null,  // this one is going to be populated by initCustomMarker method
       // CustomMarker:null,   // Class CustomMarker
@@ -502,7 +519,7 @@ $(document).ready(function readyCB(){
                     console.log(keyname + "changed");
                     google.maps.event.addDomListener( ClassRef.get('custom_marker').getContainer(), keyname, function listenerInvokesMe( ){
                       var tempfunc = ClassRef.get(keyname);
-                      tempfunc( ClassRef.get('custom_marker').getContainer());
+                      tempfunc( ClassRef.get('custom_marker') );
                     });           
                   }
                   else if (ClassRef.get(keyname) == null){
@@ -544,15 +561,15 @@ $(document).ready(function readyCB(){
                   if ( typeof ClassRef.get(keyname) == 'function') {
                     console.log(keyname + "changed");
                     ClassRef.set(keyname+'_realhandler', ClassRef.get(keyname));
-                    L.DomEvent.addListener( ClassRef.get('custom_marker').getContainer(), keyname, ClassRef.get(keyname+'_realhandler'));           
+                    L.DomEvent.addListener( ClassRef.get('custom_marker').getContainer(), keyname, ClassRef.get(keyname+'_realhandler'), ClassRef.get("custom_marker"));           
                   }
                   else if (ClassRef.get(keyname) == null){
                     console.log("cancel one event handler of " + keyname);
-                    L.DomEvent.removeListener( ClassRef.get('custom_marker').getContainer() , keyname, ClassRef.get(keyname+'_realhandler'));
+                    L.DomEvent.removeListener( ClassRef.get('custom_marker').getContainer() , keyname, ClassRef.get(keyname+'_realhandler') );
                     ClassRef.set(keyname+'_realhandler', null);
                   }
                   else {
-                    console.log("content of " + keyname + " is not event");
+                    console.error("content of " + keyname + " is not event");
                   }
                 });
               });  // _.each(...);
@@ -604,6 +621,8 @@ $(document).ready(function readyCB(){
         }
         // console.log(temp_custom_marker);
         var temp_custom_marker_controller = new this.CustomMarkerController({ "custom_marker": temp_custom_marker});
+        // enable custom_marker have reference to its controller
+        temp_custom_marker._controller = temp_custom_marker_controller;
         _.each(_.keys(_.omit(options, 'anchor', 'datacontent', 'latLng', 'map')), function(keyname, index, ar){
           if (typeof options[keyname] == 'function' || options[keyname] == null) {
             temp_custom_marker_controller.set(keyname, options[keyname]);
@@ -635,7 +654,6 @@ $(document).ready(function readyCB(){
       },
 
       mapLeftClickHandler:function(event){
-        console.log("left click at: " + event.latlng);
         var ClassRef = this;
         var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event);
         // console.log("left click at pixel: " + pixel);
@@ -644,24 +662,15 @@ $(document).ready(function readyCB(){
 
       },
       mapRightClickHandler:function(event){
-        console.log(event);
         var ClassRef = this;
         var pixel = ClassRef.getPixelInMapcoverContainerFromLatLng(event);
         ClassRef.contextMenuMeetMouse(pixel, "rightclick");
         ClassRef.model.get("mc_map_events")["rightclick"] = event;
-
-
       },
-
-
 
       initialize:function (){
         console.log("map_view_unit init()");
         var ClassRef = this;
-
-        if (map_options){
-          this.model.set(map_options);
-        }
 
         ClassRef.mapInitialize(); 
         ClassRef._initCustomMarkerController();  

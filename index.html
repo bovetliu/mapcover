@@ -108,7 +108,11 @@
     <script id="customMarkerTemplate" type="text/template">
       <div class="mc-static2mapcanvas customized-marker">
         <div class="content text-center"><%= displayedText %></div>
-        <div class="text-center remove-background"> <span aria-hidden="true" class="glyphicon glyphicon-triangle-bottom"></span></div>
+        <div class="text-center remove-background"> 
+          <svg height="8" width="16">
+            <polygon points="0,0 8,8 16,0">Sorry, your browser does not support inline SVG.</polygon>
+          </svg>
+        </div>
       </div>
     </script>
     <script id="AnotherClassTemplate" type="text/template">

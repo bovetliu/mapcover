@@ -46,23 +46,36 @@ body {
   background-color: rgba(0, 255, 255, 0);
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker .content {
+  cursor: pointer;
   background-color: #FF5A5F;
   color: #fff;
   padding: 0px 5px;
   font-size: 14px;
+  min-width: 100px;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker .remove-background {
   padding: 0px;
   margin: 0px;
-  margin-top: -4px;
+  margin-top: -3px;
+  height: 11px;
   color: #FF5A5F;
   background-color: rgba(255, 255, 255, 0);
+}
+#content #mapcover #mapcover-map .gm-style div div .customized-marker .remove-background svg {
+  font-size: 8px;
+  line-height: 8px;
+}
+#content #mapcover #mapcover-map .gm-style div div .customized-marker .remove-background svg polygon {
+  fill: #FF5A5F;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker.customized-marker-hover .content {
   background-color: #252525;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker.customized-marker-hover .remove-background {
   color: #252525;
+}
+#content #mapcover #mapcover-map .gm-style div div .customized-marker.customized-marker-hover .remove-background svg polygon {
+  fill: #252525;
 }
 #content #mapcover #mapcover-map .gm-style div div .customized-marker2 {
   font-size: 14px;
@@ -91,28 +104,41 @@ body {
 }
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker {
   background-color: rgba(0, 255, 255, 0);
-  min-width: 100px;
-  max-width: 200px;
-  height: auto;
 }
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .content {
+  position: relative;
+  cursor: pointer;
   background-color: #FF5A5F;
   color: #fff;
   padding: 0px 5px;
   font-size: 14px;
+  min-width: 100px;
 }
 #content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .remove-background {
+  cursor: pointer;
+  position: relative;
   padding: 0px;
-  margin: 0px;
-  margin-top: -6px;
+  margin: auto;
+  width: 16px;
+  height: 8px;
   color: #FF5A5F;
   background-color: rgba(255, 255, 255, 0);
 }
-#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker.customized-marker-hover .content {
+#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .remove-background svg {
+  font-size: 8px;
+  line-height: 8px;
+}
+#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker .remove-background svg polygon {
+  fill: #FF5A5F;
+}
+#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker:hover .content {
   background-color: #252525;
 }
-#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker.customized-marker-hover .remove-background {
+#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker:hover .remove-background {
   color: #252525;
+}
+#content #mapcover-mapbox #mapcover-map-mapbox .customized-marker:hover .remove-background svg polygon {
+  fill: #252525;
 }
 #content #mapcover-mapbox .demoControlPanel {
   left: 20px;

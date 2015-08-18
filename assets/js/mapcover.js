@@ -3,7 +3,6 @@ $(document).ready(function readyCB(){
   // this mapcover.js occupy position at window
   initMapCover = function ( id_of_map_cover_div, id_of_map_container, map_options ) {    
     var utility = (function createUtility(){
-    
       function Utility(){
         this.selfIntroduction = "I am one utility class,";
       }
@@ -110,12 +109,10 @@ $(document).ready(function readyCB(){
     var MapViewUnit = Backbone.View.extend({
       // map_control_unit has its own model
       mmoverlay:null,   // this one if for google,
-
       mapInitialize:function( ){
         var ClassRef = this;
         /*initialize google map*/
         if (ClassRef.model.get("map_vender") == "google")  { //  
-
           ClassRef.model.set("map", new google.maps.Map(ClassRef.model.get('$map_container')[0],  ClassRef.model.get("map_options") ) );
           var tempmap = ClassRef.model.get("map");
           // variable MMoverlay is just temp Object variable, but the instance of it will be property mmoverly of map_view_unit 
@@ -161,7 +158,6 @@ $(document).ready(function readyCB(){
           // passing google.maps.MouseEvent  from map to MapViewUnit
           google.maps.event.addListener(tempmap, "rightclick", function rightClickHandlerCall (event ) {ClassRef.mapRightClickHandler(event)});
           google.maps.event.addListener(tempmap, 'click', function clickHandlerCall(event) {ClassRef.mapLeftClickHandler(event)});
-
           google.maps.event.addListener(tempmap, 'dragstart',function googleMapDragstartMapcoverHandler(event){
             ClassRef.hideContextMenu();
           });
@@ -361,14 +357,12 @@ $(document).ready(function readyCB(){
               this._container = document.createElement("div");
               this._dom =  $(  compiledTemplateFunction(datacontent) )[0];
               this._container.appendChild(this._dom);
-              if (this._map.options.zoomAnimation && L.Browser.any3d) {   // if current browser support
+              if (ClassRef.model.get("map").options.zoomAnimation && L.Browser.any3d) {   // if current browser support
                 L.DomUtil.addClass(this._container, 'leaflet-zoom-animated');
               } else {
                 L.DomUtil.addClass(this._container, 'leaflet-zoom-hide');
               }
               L.setOptions(this, options);
-
-
             },
             refresh:function(){
               // console.log("refresh(): " + this._datacontent);
@@ -379,21 +373,23 @@ $(document).ready(function readyCB(){
 
             // this function will be called internally, and be called only once
             onAdd: function (map) {
-              this._map = map;
+              if (map){
+                // console.log("inside map @@@@@@@@@@@@@@@@@@");
+                this._map = map;
+                if (!this._dom) {
+                  this._initDom();
+                }
+                if (this._dom.style.display == "none"){
+                  this._dom.style.display = "initial";
+                }
+                map._panes.overlayPane.appendChild(this._container);
+                map.on('viewreset', this._reset, this);
 
-              if (!this._dom) {
-                this._initDom();
+                if (map.options.zoomAnimation && L.Browser.any3d) {
+                  map.on('zoomanim', this._animateZoom, this);
+                }
+                this._reset();  // have to call this manually for one time, to set the element at right position
               }
-              if (this._dom.style.display == "none"){
-                this._dom.style.display = "initial";
-              }
-              map._panes.overlayPane.appendChild(this._container);
-              map.on('viewreset', this._reset, this);
-
-              if (map.options.zoomAnimation && L.Browser.any3d) {
-                map.on('zoomanim', this._animateZoom, this);
-              }
-              this._reset();  // have to call this manually for one time, to set the element at right position
             },
 
             // _initDom will be called in onAdd()
@@ -452,8 +448,11 @@ $(document).ready(function readyCB(){
             },
             //convenience method
             addTo: function (map) {
-              map.addLayer(this);
-              return this;
+              if (map){
+                this._map = map;
+                map.addLayer(this);
+                return this;
+              }
             },
 
             getAttribution: function () {
@@ -615,8 +614,8 @@ $(document).ready(function readyCB(){
         var CustomMarker = user_gen_classes.get(classname);
         var temp_custom_marker = new CustomMarker(options.anchor, options.datacontent, options.latLng, options.map);
         console.log("generated temp_custom_marker: ");
-        if( this.model.get("map_vender") == "mapbox"){
-          temp_custom_marker.addTo(this.model.get("map"));
+        if( this.model.get("map_vender") == "mapbox" && options.map !== null){
+          temp_custom_marker.addTo(options.map);
         }
         // console.log(temp_custom_marker);
         var temp_custom_marker_controller = new this.CustomMarkerController({ "custom_marker": temp_custom_marker});

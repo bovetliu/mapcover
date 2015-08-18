@@ -222,7 +222,7 @@ $(document).ready(function(){
 
     });
     mapcover_mapbox.initCustomMarker( "CustomMarker1_mapcover" , _.template( $('#customMarkerTemplate').html()  ));
-    $('#log-mapbox').html("1. created on HTML/CSS specified marker, click it will log on browser console");
+    $('#log-mapbox').html("1. created on HTML/CSS specified marker, but map is null, so will not directly add it to map pane");
     
 
 
@@ -231,7 +231,7 @@ $(document).ready(function(){
       anchor: {x:50, y :100},
       datacontent:{"displayedText":"This Marker1"},
       latLng: L.latLng(-34.397, 150.644),
-      map: mapcover_mapbox.model.get("map"),
+      map: null,
       // mouseover:function(){
       //   var container_node =this;
       //   console.log("marker heard mouseover");
@@ -252,12 +252,17 @@ $(document).ready(function(){
 
     var temp_marker_controller_mapcover = mapcover_mapbox.addCustomMarker("CustomMarker1_mapcover"  ,custom_marker_option_mapcover);
 
+    setTimeout(function(){
+      console.log("setting map null");
+      $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>1. add marker to map from null ");
+      temp_marker_controller_mapcover.set("map", mapcover_mapbox.model.get("map"));
+    },3000);
 
     setTimeout(function(){
       console.log("setting map null");
       $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>2. remove marker from map");
       temp_marker_controller_mapcover.set("map",null);
-    },3000);
+    },4500);
 
     setTimeout(function(){
       console.log("setting map null");

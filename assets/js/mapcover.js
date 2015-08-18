@@ -517,10 +517,11 @@ $(document).ready(function readyCB(){
 
                   if ( typeof ClassRef.get(keyname) == 'function') {
                     console.log(keyname + "changed");
-                    google.maps.event.addDomListener( ClassRef.get('custom_marker').getContainer(), keyname, function listenerInvokesMe( ){
-                      var tempfunc = ClassRef.get(keyname);
-                      tempfunc( ClassRef.get('custom_marker') );
-                    });           
+                    google.maps.event.addDomListener( 
+                      ClassRef.get('custom_marker').getContainer(), 
+                      keyname, 
+                      ClassRef.get(keyname).bind( ClassRef.get("custom_marker") ) 
+                    );           
                   }
                   else if (ClassRef.get(keyname) == null){
                     console.log("cancel one event handler of " + keyname);

@@ -205,13 +205,15 @@ $(document).ready(function(){
         datacontent:{"displayedText": ($('#content-marker1-mapbox').val()=="")?"New of Marker1!": $('#content-marker1-mapbox').val()},
         latLng: mapcover_mapbox.model.get("mc_map_events")['rightclick'].latlng,
         map: mapcover_mapbox.model.get("map"),
-        click:function(container_node){
+        click:function(){
           alert("I am created By you via ContextMenu");
         },
-        mouseover:function(container_node){
+        mouseover:function(){
+          var container_node = this.getContainer()
           container_node.childNodes[0].classList.add("customized-marker-hover");
         },
-        mouseout:function(container_node){
+        mouseout:function(){
+          var container_node = this.getContainer()
           container_node.childNodes[0].classList.remove("customized-marker-hover");
         },
       };
@@ -287,7 +289,7 @@ $(document).ready(function(){
 
     setTimeout(function(){
       $('#log-mapbox').html( $('#log-mapbox').html() + "<br/><br/>6. change marker content");
-      temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaaaaaaaaaaaaaaaaaa"});
+      temp_marker_controller_mapcover.set("datacontent",{"displayedText": "yeeeeeeeehaaa aaaaaaaaaaaaaaaa"});
     },15000);
 
 

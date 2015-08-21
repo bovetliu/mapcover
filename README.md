@@ -1,6 +1,6 @@
 ## Mapcover.js: start customizing map elements & UIs by writing HTML/CSS/JS!
 ####  Mapcover is one tool to enable you to write fully customizable elements on and over map. "Fully customizable" means writing HTML, CSS and JS for elements of map just like what you did on other parts of webpage.
-#### Mapcover currently supports Google Map. Will support Bing Map, Mapbox, and so on. 
+#### Mapcover currently supports Google Map, Mapbox, will support Bing Map and so on. 
 v0.1.3
 
 ![alt text](https://github.com/bovetliu/mapcover/blob/master/assets/img/mapcoverjs.jpg "Screen Shot of Mapcover.js Demo")
